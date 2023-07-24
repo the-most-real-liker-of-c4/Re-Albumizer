@@ -20,9 +20,14 @@ using Color = System.Windows.Media.Color;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using Point = System.Windows.Point;
 using TextBox = System.Windows.Forms.TextBox;
+using System.ComponentModel;
+using System.Windows.Data;
 
 namespace Re_Albumizer
 {
+    /// <summary>
+    /// A Structure for storing a Song
+    /// </summary>
     public class MusicFile
     {
         public uint TrackId { get; set; }
@@ -48,9 +53,9 @@ namespace Re_Albumizer
     /// </summary>
     public partial class AlbumizerMain : Window
     {
+
+
         #region Define
-
-
         private LinearGradientBrush textBrush = new LinearGradientBrush();
         private SolidColorBrush borderBrush = new SolidColorBrush();
         private string? _path = null;
@@ -58,7 +63,7 @@ namespace Re_Albumizer
         
         #endregion
 
-        #region Album Modifiers
+        #region Album Makers
 
         public AlbumizerMain()
         {
@@ -115,7 +120,11 @@ namespace Re_Albumizer
                     
                 }
 
-                SongList[0].TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0?0:SongList.Count) - 1);
+                foreach (var song in SongList)
+                {
+                    song.TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0 ? 0 : SongList.Count) - 1);
+                }
+               
                 //check for no album art before blowing up the program
                 //always use the album art of the first song (its easier that way)
 
@@ -131,7 +140,7 @@ namespace Re_Albumizer
                     );
                 }
                 AlbumArt.Source = FromHBitmap(albumArtBitmap);
-                //force select to prevent playing a null song
+                //force select to prevent modifying a null song
                 SongListElement.SelectedIndex = 0;
                 
                 
@@ -164,15 +173,17 @@ namespace Re_Albumizer
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
             };
             if (selNewFile.ShowDialog() == false) return;
-            File currMp3 = TagLib.File.Create(selNewFile.FileName);
-            if (currMp3.TagTypes != TagTypes.AllTags)
+            FileInfo fl = new FileInfo(selNewFile.FileName);
+            fl.CopyTo(_path + @"\" + fl.Name);
+            File currMp3 = TagLib.File.Create(_path + @"\" + fl.Name);
+            if (currMp3.TagTypes == TagTypes.None)
             {
                 SongList.Add(new MusicFile(
                     0,
                     Re_Albumizer.Properties.Resources.NoSong,
                     Re_Albumizer.Properties.Resources.NoSong,
                     Re_Albumizer.Properties.Resources.NoSong,
-                    selNewFile.FileName,
+                    _path + @"\" + fl.Name,
                     currMp3));
             }
             else
@@ -181,64 +192,33 @@ namespace Re_Albumizer
                     currMp3.Tag.Track,
                     currMp3.Tag.Title,
                     String.Join(",", currMp3.Tag.Performers),
-                    currMp3.Tag.Album,
-                    selNewFile.FileName,
+                    SongList[0].Album,
+                    _path + @"\" + fl.Name,
                     currMp3));
             }
-            SongList[0].TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0 ? 0 : SongList.Count) - 1);
-        }
-
-        private void OpenAlbumFolder(object sender, RoutedEventArgs e)
-        {
-            
-            if (_path != null) Process.Start("explorer.exe", _path);
-        }
-
-        private void RemoveitemfromAlbum(object sender, RoutedEventArgs e)
-        {
-            SongList[SongListElement.SelectedIndex].TaglibFile.RemoveTags(TagTypes.AllTags);
-            SongList.RemoveAt(SongListElement.SelectedIndex);
-            SongList[0].TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0 ? 0 : SongList.Count) - 1);
-
-        }
-
-        private void DeleteSongFromDisk(object sender, RoutedEventArgs e)
-        {
-            if (MessageBox.Show(string.Format(Properties.Resources.DeleteConfirmText, SongList[SongListElement.SelectedIndex].Title),
-                    Properties.Resources.DeleteConfirmCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation,
-                    MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
+            currMp3.Tag.Album = SongList[0].Album;
+            currMp3.Tag.Pictures = SongList[0].TaglibFile.Tag.Pictures;
+            currMp3.Tag.Genres = SongList[0].TaglibFile.Tag.Genres;
+            currMp3.Tag.Year = SongList[0].TaglibFile.Tag.Year;
+            currMp3.Tag.AlbumArtists = SongList[0].TaglibFile.Tag.AlbumArtists;
+            currMp3.Save();
+            fl.Delete();
+            foreach (var song in SongList)
             {
-                new FileInfo(SongList[SongListElement.SelectedIndex].fileLoc).Delete();
-                SongList.RemoveAt(SongListElement.SelectedIndex);
-                SongList[0].TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0 ? 0 : SongList.Count) - 1);
+                song.TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0 ? 0 : SongList.Count) - 1);
             }
         }
-        
         #endregion
 
-        #region Auxillary Functions
-        //allows setting ImageSource from Bitmap
-        public BitmapSource FromHBitmap(Bitmap bmp)
-        {
-            return Imaging.CreateBitmapSourceFromHBitmap(bmp.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-        }
-
-        public void ExitApp(object sender, RoutedEventArgs e)
-        {
-            Environment.Exit(0);
-        }
-        
-        private void OpenAboutPage(object sender, RoutedEventArgs e)
-        {
-            //show about page
-            new EditObject(IntPtr.Zero).ShowDialog();
-        }
+        #region Album Control Setters
         private void AAlbumNameChange(object sender, RoutedEventArgs e)
         {
-            EditObject edobj = new EditObject(EditObject.InputMode.TEXT);
-            edobj.Title = "Enter New Album Name";
+            EditObject edobj = new EditObject(EditObject.InputMode.TEXT)
+            {
+                Title = "Enter New Album Name"
+            };
             string res = edobj.ShowForm();
-            if (res !="")
+            if (res != "")
             {
                 foreach (MusicFile song in SongList)
                 {
@@ -248,13 +228,15 @@ namespace Re_Albumizer
                     song.TaglibFile.Save();
                 }
             }
-            
+
         }
 
         private void AYearChange(object sender, RoutedEventArgs e)
         {
-            EditObject edobj = new EditObject(EditObject.InputMode.TEXT);
-            edobj.Title = "Enter Album Year";
+            EditObject edobj = new EditObject(EditObject.InputMode.TEXT)
+            {
+                Title = "Enter Album Year"
+            };
             string res = edobj.ShowForm();
             //MessageBox.Show(int.Parse(res).ToString());
             if (res != "")
@@ -279,8 +261,10 @@ namespace Re_Albumizer
 
         private void AArtistChange(object sender, RoutedEventArgs e)
         {
-            EditObject edobj = new EditObject(EditObject.InputMode.ARRAYTEXT);
-            edobj.Title = "Enter Artists Name";
+            EditObject edobj = new EditObject(EditObject.InputMode.ARRAYTEXT)
+            {
+                Title = "Enter Artists Name"
+            };
             string[] res = edobj.ShowForm();
             //MessageBox.Show(res);
             if (res.Length != 0)
@@ -296,8 +280,10 @@ namespace Re_Albumizer
 
         private void AGenreChange(object sender, RoutedEventArgs e)
         {
-            EditObject edobj = new EditObject(EditObject.InputMode.ARRAYTEXT);
-            edobj.Title = "Enter Genre";
+            EditObject edobj = new EditObject(EditObject.InputMode.ARRAYTEXT)
+            {
+                Title = "Enter Genre"
+            };
             string[] res = edobj.ShowForm();
             if (res.Length != 0)
             {
@@ -310,7 +296,60 @@ namespace Re_Albumizer
             }
         }
 
+
+
+        #endregion
+        #region Auxillary Functions
+        //allows setting ImageSource from Bitmap
+        public BitmapSource FromHBitmap(Bitmap bmp)
+        {
+            return Imaging.CreateBitmapSourceFromHBitmap(bmp.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+        }
+
+        public void ExitApp(object sender, RoutedEventArgs e)
+        {
+            Environment.Exit(0);
+        }
         
+        private void OpenAboutPage(object sender, RoutedEventArgs e)
+        {
+            //show about page
+            new EditObject(IntPtr.Zero).ShowDialog();
+        }
+
+        private void OpenAlbumFolder(object sender, RoutedEventArgs e)
+        {
+
+            if (_path != null) Process.Start("explorer.exe", _path);
+        }
+
+        private void RemoveItemFromAlbum(object sender, RoutedEventArgs e)
+        {
+            SongList[SongListElement.SelectedIndex].TaglibFile.RemoveTags(TagTypes.AllTags);
+            SongList[SongListElement.SelectedIndex].TaglibFile.Save();
+            SongList.RemoveAt(SongListElement.SelectedIndex);
+            foreach (var song in SongList)
+            {
+                song.TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0 ? 0 : SongList.Count) - 1);
+            }
+
+        }
+
+        private void DeleteSongFromDisk(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show(string.Format(Properties.Resources.DeleteConfirmText, SongList[SongListElement.SelectedIndex].Title),
+                    Properties.Resources.DeleteConfirmCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation,
+                    MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
+            {
+                new FileInfo(SongList[SongListElement.SelectedIndex].fileLoc).Delete();
+                SongList.RemoveAt(SongListElement.SelectedIndex);
+                foreach (var song in SongList)
+                {
+                    song.TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0 ? 0 : SongList.Count) - 1);
+                }
+            }
+        }
+
         //Textbox Onhover Helper
         private void CtrlHoverOn(object sender, MouseEventArgs e)
         {
@@ -330,7 +369,98 @@ namespace Re_Albumizer
 
         #endregion
 
+        #region Song Control Handlers
+        private void OnSCtrlTitle(object sender, RoutedEventArgs e)
+        {
+            EditObject edobj = new EditObject(EditObject.InputMode.TEXT)
+            {
+                Title = "Enter New Song Title"
+            };
+            string res = edobj.ShowForm();
+            if (res != "")
+            {
+                    MusicFile song = SongList[SongListElement.SelectedIndex];
+                    song.TaglibFile.Tag.Title=res;
+                    song.Title = res;
+                    SCtrlTitle.Text = $"Title: {res}";
+                    song.TaglibFile.Save();
+                    ICollectionView view = CollectionViewSource.GetDefaultView(SongList);
+                    view.Refresh();
+            }
+        }
+
+        private void OnSCtrlTrackNo(object sender, RoutedEventArgs e)
+        {
+            EditObject edobj = new EditObject(EditObject.InputMode.TEXT)
+            {
+                Title = "Enter New Track Number"
+            };
+            string res = edobj.ShowForm();
+            if (res != "")
+            {
+                if (!uint.TryParse(res, NumberStyles.Integer, null, out uint Track))
+                {
 
 
+                    if (MessageBox.Show(Properties.Resources.InvalidTrackNo,
+                            Properties.Resources.YearChangeYearMalformatCaption, MessageBoxButtons.OK,
+                            MessageBoxIcon.Error) == System.Windows.Forms.DialogResult.OK) return;
+                }
+                MusicFile song = SongList[SongListElement.SelectedIndex];
+                song.TaglibFile.Tag.Track = Track;
+                song.TrackId = Track;
+                SCtrlTrackNo.Text = $"Track No.: {res}";
+                song.TaglibFile.Save();
+                ICollectionView view = CollectionViewSource.GetDefaultView(SongList);
+                view.Refresh();
+            }
+        }
+
+        private void OnSCtrlContribArt(object sender, RoutedEventArgs e)
+        {
+            EditObject edobj = new EditObject(EditObject.InputMode.ARRAYTEXT)
+            {
+                Title = "Enter Artists Name"
+            };
+            string[] res = edobj.ShowForm();
+            //MessageBox.Show(res);
+            if (res.Length != 0)
+            {
+                    MusicFile song = SongList[SongListElement.SelectedIndex];
+                    song.TaglibFile.Tag.Performers = res;
+                    song.Performers = String.Join(",", res);
+                    SCtrlContribArt.Text = $"Artists: {String.Join(",", res)}";
+                    song.TaglibFile.Save();
+                    ICollectionView view = CollectionViewSource.GetDefaultView(SongList);
+                    view.Refresh();
+            }
+        }
+
+        private void OnSCtrlComposer(object sender, RoutedEventArgs e)
+        {
+            EditObject edobj = new EditObject(EditObject.InputMode.ARRAYTEXT)
+            {
+                Title = "Enter Composer Name"
+            };
+            string[] res = edobj.ShowForm();
+            //MessageBox.Show(res);
+            if (res.Length != 0)
+            {
+                MusicFile song = SongList[SongListElement.SelectedIndex];
+                song.TaglibFile.Tag.Composers = res;
+                SCtrlComposer.Text = $"Composers: {String.Join(",", res)}";
+                song.TaglibFile.Save();
+                ICollectionView view = CollectionViewSource.GetDefaultView(SongList);
+                view.Refresh();
+            }
+        }
+        private void OnSongSelectChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SCtrlTitle.Text = $"Title: {SongList[SongListElement.SelectedIndex].Title}";
+            SCtrlTrackNo.Text = $"Track No.: {SongList[SongListElement.SelectedIndex].TrackId}";
+            SCtrlContribArt.Text = $"Artists: {String.Join(",", SongList[SongListElement.SelectedIndex].TaglibFile.Tag.Performers)}";
+            SCtrlComposer.Text = $"Composers: {String.Join(",", SongList[SongListElement.SelectedIndex].TaglibFile.Tag.Composers)}";
+        }
+        #endregion
     }
 }

@@ -61,7 +61,7 @@
                 <MenuItem x:Name="EditMenu" Header="_Edit" IsEnabled="False">
                     <MenuItem Header="Open Album Folder" Click="OpenAlbumFolder"/>
                     <MenuItem Header="Add New Song" Click="AddSongToAlbum"/>
-                    <MenuItem Header="Remove Song" Click="RemoveitemfromAlbum"/>
+                    <MenuItem Header="Remove Song" Click="RemoveItemFromAlbum"/>
                     <MenuItem Header="Delete Song" Click="DeleteSongFromDisk"/>
                 </MenuItem>
                 <MenuItem x:Name="HelpMenu" Header="_Help">
@@ -76,7 +76,46 @@
             <Image x:Name="AlbumArt" Margin="3,10,0,0" Source="/FISH.jpg" HorizontalAlignment="Left" Width="180" Height="180" VerticalAlignment="Top"/>
             <TabControl x:Name="tabControl" Margin="566,10,2,2">
                 <TabItem x:Name="SongTab" Header="Song" IsEnabled="False">
-                    <Grid Background="#FFE5E5E5"/>
+                    <Grid Background="#FFE5E5E5">
+                        <StackPanel>
+                            <Border x:Name="SCtrlTitleBorder" BorderThickness="1" CornerRadius="1">
+                                <TextBlock x:Name="SCtrlTitle" MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu StaysOpen="true">
+                                            <MenuItem Header="Edit" Click="OnSCtrlTitle"/>
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
+                            </Border>
+                            <Border x:Name="SCtrlTrackNoBorder" BorderThickness="1" CornerRadius="1">
+                                <TextBlock x:Name="SCtrlTrackNo" MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu StaysOpen="true">
+                                            <MenuItem Header="Edit" Click="OnSCtrlTrackNo"/>
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
+                            </Border>
+                            <Border x:Name="SCtrlContribArtBorder" BorderThickness="1" CornerRadius="1">
+                                <TextBlock x:Name="SCtrlContribArt" MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu StaysOpen="true">
+                                            <MenuItem Header="Edit" Click="OnSCtrlContribArt"/>
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
+                            </Border>
+                            <Border x:Name="SCtrlComposeBorder" BorderThickness="1" CornerRadius="1">
+                                <TextBlock x:Name="SCtrlComposer" MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu StaysOpen="true">
+                                            <MenuItem Header="Edit" Click="OnSCtrlComposer"/>
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
                 </TabItem>
                 <TabItem x:Name="AlbumTab" Header="Album" IsEnabled="False">
                     <Grid Background="#FFE5E5E5">
@@ -123,7 +162,7 @@
                     </Grid>
                 </TabItem>
             </TabControl>
-            <ListView x:Name="SongListElement" d:ItemsSource="{Binding SongList, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Margin="202,0,0,0" ScrollViewer.HorizontalScrollBarVisibility="Visible" Width="359" HorizontalAlignment="Left" VerticalAlignment="Center" Height="352" HorizontalContentAlignment="Stretch">
+            <ListView x:Name="SongListElement" SelectionChanged="OnSongSelectChanged" d:ItemsSource="{Binding SongList, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Margin="202,0,0,0" ScrollViewer.HorizontalScrollBarVisibility="Visible" Width="359" HorizontalAlignment="Left" VerticalAlignment="Center" Height="352" HorizontalContentAlignment="Stretch">
                 <ListView.View>
                     <GridView>
 

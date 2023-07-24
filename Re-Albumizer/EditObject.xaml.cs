@@ -83,7 +83,7 @@ namespace Re_Albumizer
                     
             }
 
-            return "false";
+            return "";
         }
 
         private void Okbutton_OnClick(object sender, RoutedEventArgs e)

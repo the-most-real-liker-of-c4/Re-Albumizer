@@ -99,6 +99,15 @@ namespace Re_Albumizer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid Number.
+        /// </summary>
+        internal static string InvalidTrackNo {
+            get {
+                return ResourceManager.GetString("InvalidTrackNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
         internal static string NoSong {
