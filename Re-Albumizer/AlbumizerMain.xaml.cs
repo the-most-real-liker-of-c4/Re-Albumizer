@@ -13,6 +13,13 @@ using System.Windows.Forms;
 using MessageBox = System.Windows.Forms.MessageBox;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Windows.Controls;
+using System.Windows.Media;
+using Color = System.Windows.Media.Color;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using Point = System.Windows.Point;
+using TextBox = System.Windows.Forms.TextBox;
 
 namespace Re_Albumizer
 {
@@ -43,11 +50,11 @@ namespace Re_Albumizer
     {
         #region Define
 
-        
 
-        
+        private LinearGradientBrush textBrush = new LinearGradientBrush();
+        private SolidColorBrush borderBrush = new SolidColorBrush();
         private string? _path = null;
-        public ObservableCollection<dynamic> SongList = new ObservableCollection<dynamic>();
+        public ObservableCollection<MusicFile> SongList = new ObservableCollection<MusicFile>();
         
         #endregion
 
@@ -56,9 +63,17 @@ namespace Re_Albumizer
         public AlbumizerMain()
         {
             
+            
             //what???
             InitializeComponent();
             SongListElement.ItemsSource=SongList;
+            borderBrush.Color=Color.FromArgb(100,166,214,233);
+            textBrush.StartPoint = new Point(0.5, 0);
+            textBrush.EndPoint = new Point(0.5, 1);
+            textBrush.GradientStops.Add(new GradientStop(Color.FromArgb(100, 255, 255, 255), 0));
+            //textBrush.GradientStops.Add(new GradientStop(Color.FromArgb(100, 218, 234, 243), 1));
+            textBrush.GradientStops.Add(new GradientStop(Color.FromArgb(100, 198, 227, 239), 1));
+
         }
 
         private void LoadNewAlbum(object sender, RoutedEventArgs e)
@@ -98,9 +113,6 @@ namespace Re_Albumizer
                         file,
                         currMp3));
                     
-
-
-
                 }
 
                 SongList[0].TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0?0:SongList.Count) - 1);
@@ -124,11 +136,12 @@ namespace Re_Albumizer
                 
                 
                 //you thought we were done here but No!
-                ACtrlAlbumName.Text = SongList[0].TaglibFile.Tag.Album;
-                ACtrlGenre.Text = String.Join(",",SongList[0].TaglibFile.Tag.Genres);
-                ACtrlMainArtist.Text = String.Join(",",SongList[0].TaglibFile.Tag.AlbumArtists);
-                ACtrlYear.Text = SongList[0].TaglibFile.Tag.Year.ToString();
-
+                ACtrlAlbumName.Text = $"Album: {SongList[0].TaglibFile.Tag.Album}";
+                ACtrlGenre.Text = $"Genres: {String.Join(",", SongList[0].TaglibFile.Tag.Genres)}";
+                ACtrlMainArtist.Text = $"Album Artists: {String.Join(",",SongList[0].TaglibFile.Tag.AlbumArtists)}";
+                ACtrlYear.Text = $"Year: {SongList[0].TaglibFile.Tag.Year.ToString()}";
+                AlbumTab.IsEnabled = true;
+                SongTab.IsEnabled=true;
 
             }
             else
@@ -172,31 +185,32 @@ namespace Re_Albumizer
                     selNewFile.FileName,
                     currMp3));
             }
-            SongList[0].TaglibFile.Tag.TrackCount = (SongList.Count < 0 ? 0 : SongList.Count) - 1;
+            SongList[0].TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0 ? 0 : SongList.Count) - 1);
         }
 
         private void OpenAlbumFolder(object sender, RoutedEventArgs e)
         {
+            
             if (_path != null) Process.Start("explorer.exe", _path);
         }
 
         private void RemoveitemfromAlbum(object sender, RoutedEventArgs e)
         {
-            SongList[SongListElement.SelectedIndex].SongFile.RemoveTags(TagTypes.AllTags);
+            SongList[SongListElement.SelectedIndex].TaglibFile.RemoveTags(TagTypes.AllTags);
             SongList.RemoveAt(SongListElement.SelectedIndex);
-            SongList[0].TaglibFile.Tag.TrackCount = (SongList.Count < 0 ? 0 : SongList.Count) - 1;
+            SongList[0].TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0 ? 0 : SongList.Count) - 1);
 
         }
 
         private void DeleteSongFromDisk(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show(string.Format(Properties.Resources.DeleteConfirmText, SongList[SongListElement.SelectedIndex].Name),
+            if (MessageBox.Show(string.Format(Properties.Resources.DeleteConfirmText, SongList[SongListElement.SelectedIndex].Title),
                     Properties.Resources.DeleteConfirmCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation,
                     MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
             {
-                new FileInfo(SongList[SongListElement.SelectedIndex].Path).Delete();
+                new FileInfo(SongList[SongListElement.SelectedIndex].fileLoc).Delete();
                 SongList.RemoveAt(SongListElement.SelectedIndex);
-                SongList[0].TaglibFile.Tag.TrackCount = (SongList.Count < 0 ? 0 : SongList.Count) - 1;
+                SongList[0].TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0 ? 0 : SongList.Count) - 1);
             }
         }
         
@@ -224,13 +238,17 @@ namespace Re_Albumizer
             EditObject edobj = new EditObject(EditObject.InputMode.TEXT);
             edobj.Title = "Enter New Album Name";
             string res = edobj.ShowForm();
-            foreach (MusicFile song in SongList)
+            if (res !="")
             {
-                song.TaglibFile.Tag.Album = res;
-                song.Album = res;
-                ACtrlAlbumName.Text = res;
-                song.TaglibFile.Save();
+                foreach (MusicFile song in SongList)
+                {
+                    song.TaglibFile.Tag.Album = res;
+                    song.Album = res;
+                    ACtrlAlbumName.Text = $"Album: {res}";
+                    song.TaglibFile.Save();
+                }
             }
+            
         }
 
         private void AYearChange(object sender, RoutedEventArgs e)
@@ -238,24 +256,24 @@ namespace Re_Albumizer
             EditObject edobj = new EditObject(EditObject.InputMode.TEXT);
             edobj.Title = "Enter Album Year";
             string res = edobj.ShowForm();
-            MessageBox.Show(res);
-            foreach (MusicFile song in SongList)
+            //MessageBox.Show(int.Parse(res).ToString());
+            if (res != "")
             {
-                try
+                foreach (MusicFile song in SongList)
                 {
-                    song.TaglibFile.Tag.Year = uint.Parse(res);
-                    ACtrlYear.Text = res;
+                    if (!uint.TryParse(res, NumberStyles.Integer, null, out uint year))
+                    {
+
+
+                        if (MessageBox.Show(Properties.Resources.YearChangeYearMalformatText,
+                                Properties.Resources.YearChangeYearMalformatCaption, MessageBoxButtons.OK,
+                                MessageBoxIcon.Error) == System.Windows.Forms.DialogResult.OK) return;
+                    }
+
+                    song.TaglibFile.Tag.Year = year;
+                    ACtrlYear.Text = $"Year: {res}";
                     song.TaglibFile.Save();
                 }
-                catch (FormatException ex)
-                {
-                    if (MessageBox.Show(Properties.Resources.YearChangeYearMalformatText,
-                            Properties.Resources.YearChangeYearMalformatCaption, MessageBoxButtons.RetryCancel,
-                            MessageBoxIcon.Error) == System.Windows.Forms.DialogResult.Cancel) return;
-                    AYearChange(sender,e);
-                }
-
-                
             }
         }
 
@@ -264,11 +282,15 @@ namespace Re_Albumizer
             EditObject edobj = new EditObject(EditObject.InputMode.ARRAYTEXT);
             edobj.Title = "Enter Artists Name";
             string[] res = edobj.ShowForm();
-            foreach (MusicFile song in SongList)
+            //MessageBox.Show(res);
+            if (res.Length != 0)
             {
-                song.TaglibFile.Tag.AlbumArtists=res;
-                ACtrlMainArtist.Text = String.Join(",", res);
-                song.TaglibFile.Save();
+                foreach (MusicFile song in SongList)
+                {
+                    song.TaglibFile.Tag.AlbumArtists = res;
+                    ACtrlMainArtist.Text = $"Album Artists: {String.Join(",", res)}";
+                    song.TaglibFile.Save();
+                }
             }
         }
 
@@ -277,14 +299,37 @@ namespace Re_Albumizer
             EditObject edobj = new EditObject(EditObject.InputMode.ARRAYTEXT);
             edobj.Title = "Enter Genre";
             string[] res = edobj.ShowForm();
-            foreach (MusicFile song in SongList)
+            if (res.Length != 0)
             {
-                song.TaglibFile.Tag.Genres = res;
-                ACtrlGenre.Text = String.Join(",", res);
-                song.TaglibFile.Save();
+                foreach (MusicFile song in SongList)
+                {
+                    song.TaglibFile.Tag.Genres = res;
+                    ACtrlGenre.Text = $"Genres: {String.Join(",", res)}";
+                    song.TaglibFile.Save();
+                }
             }
         }
+
+        
+        //Textbox Onhover Helper
+        private void CtrlHoverOn(object sender, MouseEventArgs e)
+        {
+            
+            var sendingTextbox = (sender as TextBlock);
+            var sendingParent = (sendingTextbox.Parent as Border);
+            sendingTextbox.Background = textBrush;
+            sendingParent.BorderBrush = borderBrush;
+        }
+        private void CtrlHoverOff(object sender, MouseEventArgs e)
+        {
+            var sendingTextbox = (sender as TextBlock);
+            var sendingParent = (sendingTextbox.Parent as Border);
+            sendingTextbox.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0,0,0,0));
+            sendingParent.BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)); ;
+        }
+
         #endregion
+
 
 
     }

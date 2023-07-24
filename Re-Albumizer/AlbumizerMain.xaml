@@ -1,4 +1,6 @@
-﻿<Window
+﻿<!---->
+
+<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,8 +9,47 @@
         x:Class="Re_Albumizer.AlbumizerMain"
         mc:Ignorable="d"
         
-        Title="Albumizer" SizeToContent="WidthAndHeight" Icon="/wmsc.ico" MinWidth="773.61" MinHeight="449.96" Height="443" Width="792" ResizeMode="CanMinimize">
+        Title="Albumizer" Icon="/wmsc.ico" MinWidth="773.61" MinHeight="449.96" Height="443" Width="792" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight" WindowStyle="ThreeDBorderWindow">
+    <Window.Resources>
+        <Style x:Key="OnHoverBlue" TargetType="TextBlock">
+            <Setter Property="Background" Value=" #00FFFFFF"></Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="TextBlock.MouseEnter">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation 
+                                    AutoReverse="False" 
+                                    Duration="0:0:0.6" 
+                                    To="#7f002366"
+                                    AccelerationRatio="1" 
+                                    Storyboard.TargetProperty="Background.Color"
+                                    FillBehavior="HoldEnd">
+                                </ColorAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="TextBlock.MouseLeave">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation 
+                                    AutoReverse="False" 
+                                    Duration="0:0:0.6" 
+                                    To="#00ffffff"
+                                    AccelerationRatio="1" 
+                                    Storyboard.TargetProperty="Background.Color"
+                                    FillBehavior="HoldEnd">
+                                </ColorAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
 
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid Height="434" VerticalAlignment="Top">
         <DockPanel Margin="0,0,0,405" VerticalAlignment="Top">
             <Menu DockPanel.Dock="Top" Height="23">
@@ -33,42 +74,51 @@
         <Label x:Name="LoadedAlbum_Text" Content="Current Album: None" Margin="10,34,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="517"/>
         <Grid x:Name="MainAlbumControls" Margin="5,57,5,5" >
             <Image x:Name="AlbumArt" Margin="3,10,0,0" Source="/FISH.jpg" HorizontalAlignment="Left" Width="180" Height="180" VerticalAlignment="Top"/>
-            <TabControl x:Name="tabControl" Margin="566,10,0,0" Width="216">
-                <TabItem Header="Song">
+            <TabControl x:Name="tabControl" Margin="566,10,2,2">
+                <TabItem x:Name="SongTab" Header="Song" IsEnabled="False">
                     <Grid Background="#FFE5E5E5"/>
                 </TabItem>
-                <TabItem Header="Album">
+                <TabItem x:Name="AlbumTab" Header="Album" IsEnabled="False">
                     <Grid Background="#FFE5E5E5">
                         <StackPanel>
-                            <TextBlock x:Name="ACtrlAlbumName">
-                                <TextBlock.ContextMenu>
-                                    <ContextMenu StaysOpen="true">
-                                        <MenuItem Header="Edit" Click="AAlbumNameChange"/>
-                                    </ContextMenu>
-                                </TextBlock.ContextMenu>
-                            </TextBlock>
-                            <TextBlock x:Name="ACtrlGenre">
-                                <TextBlock.ContextMenu>
-                                    <ContextMenu StaysOpen="true">
-                                        <MenuItem Header="Edit" Click="AGenreChange"/>
-                                    </ContextMenu>
-                                </TextBlock.ContextMenu>
-                            </TextBlock>
-                            <TextBlock x:Name="ACtrlMainArtist">
-                                <TextBlock.ContextMenu>
-                                    <ContextMenu StaysOpen="true">
-                                        <MenuItem Header="Edit" Click="AArtistChange"/>
-                                    </ContextMenu>
-                                </TextBlock.ContextMenu>
-                            </TextBlock>
-                            <TextBlock x:Name="ACtrlYear">
-                                <TextBlock.ContextMenu>
-                                    <ContextMenu StaysOpen="true">
-                                        <MenuItem Header="Edit" Click="AYearChange"/>
-                                    </ContextMenu>
-                                </TextBlock.ContextMenu>
-                            </TextBlock>
-                            
+                            <!--Style="{StaticResource OnHoverBlue}"-->
+                            <Border x:Name="ACtrlAlbumBorder" BorderThickness="1" CornerRadius="1">
+                                <TextBlock x:Name="ACtrlAlbumName" MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu StaysOpen="true">
+                                            <MenuItem Header="Edit" Click="AAlbumNameChange"/>
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
+                            </Border>
+                            <Border x:Name="ACtrlGenreBorder" BorderThickness="1" CornerRadius="1">
+                                <TextBlock x:Name="ACtrlGenre"  MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu StaysOpen="true">
+                                            <MenuItem Header="Edit" Click="AGenreChange"/>
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
+                            </Border>
+                            <Border x:Name="ACtrlMainArtistBorder" BorderThickness="1" CornerRadius="1">
+                                <TextBlock x:Name="ACtrlMainArtist"  MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu StaysOpen="true">
+                                            <MenuItem Header="Edit" Click="AArtistChange"/>
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
+                            </Border>
+                            <Border x:Name="ACtrlYearBorder" BorderThickness="1" CornerRadius="1">
+                                <TextBlock x:Name="ACtrlYear"  MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu StaysOpen="true">
+                                            <MenuItem Header="Edit" Click="AYearChange"/>
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
+                            </Border>
+
                         </StackPanel>
                     </Grid>
                 </TabItem>
