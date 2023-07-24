@@ -177,7 +177,7 @@ namespace Re_Albumizer
 
         private void OpenAlbumFolder(object sender, RoutedEventArgs e)
         {
-            Process.Start("explorer.exe", _path);
+            if (_path != null) Process.Start("explorer.exe", _path);
         }
 
         private void RemoveitemfromAlbum(object sender, RoutedEventArgs e)

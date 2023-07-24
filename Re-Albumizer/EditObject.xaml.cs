@@ -40,21 +40,21 @@ namespace Re_Albumizer
             AboutText.Text = Re_Albumizer.Properties.Resources.AboutText;
             this.WindowStyle = WindowStyle.SingleBorderWindow;
             ArrayTextInput.Visibility = Visibility.Collapsed;
-            TextInput.Visibility = Visibility.Collapsed;
+            TextBoxInput.Visibility = Visibility.Collapsed;
         }
         public EditObject(InputMode i)
         {
-            AboutGrid.Visibility = Visibility.Collapsed;
             InitializeComponent();
+            AboutGrid.Visibility = Visibility.Collapsed;
             _currentInputMode = i;
             switch (i)
             {
                 case InputMode.ARRAYTEXT:
                     ArrayTextInput.Visibility=Visibility.Visible;
-                    TextInput.Visibility = Visibility.Collapsed;
+                    TextBoxInput.Visibility = Visibility.Collapsed;
                     break;
                 case InputMode.TEXT:
-                    TextInput.Visibility=Visibility.Visible;
+                    TextBoxInput.Visibility=Visibility.Visible;
                     ArrayTextInput.Visibility = Visibility.Collapsed;
                     break;
             }
@@ -91,7 +91,7 @@ namespace Re_Albumizer
                     return returnList.ToArray();
                     
                 case InputMode.TEXT:
-                    return TextInput.Text;
+                    return TextBoxInput.Text;
                     
             }
 

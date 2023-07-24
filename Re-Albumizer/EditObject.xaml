@@ -20,7 +20,7 @@
             <Button x:Name="AddNew" Content="Add New Line" Margin="206,278,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.583,0.492" Width="92" HorizontalAlignment="Left" Height="21" Click="AddNew_OnClick"/>
             <StackPanel x:Name="ListStacker" HorizontalAlignment="Center" VerticalAlignment="Center" Height="245" Width="278"/>
         </Grid>
-        <TextBox x:Name="TextInput" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Width="120" Margin="0,1,0,0" ToolTip="Enter Desired Value" d:IsHidden="True">
+        <TextBox x:Name="TextBoxInput" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Width="120" Margin="0,1,0,0" ToolTip="Enter Desired Value" d:IsHidden="True">
             <TextBox.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="White"/>
@@ -38,7 +38,7 @@
         <Button x:Name="Okbutton" Content="OK" HorizontalAlignment="Left" Margin="372,278,5,5" VerticalAlignment="Top" Width="64" Click="Okbutton_OnClick"/>
         <Grid x:Name="AboutGrid">
             <Image x:Name="AboutImage" HorizontalAlignment="Left" Height="249" Margin="10,10,0,0" VerticalAlignment="Top" Width="186" Source="/FISH.jpg"/>
-            <TextBlock x:Name="AboutText" xml:space="preserve" HorizontalAlignment="Left" Margin="231,10,0,0" Text="" VerticalAlignment="Top" Height="248" Width="172">
+            <TextBlock x:Name="AboutText" xml:space="preserve" HorizontalAlignment="Left" Margin="231,10,0,0" Text="" VerticalAlignment="Top" Height="248" Width="172" TextWrapping="Wrap">
                
             </TextBlock>
         </Grid>
