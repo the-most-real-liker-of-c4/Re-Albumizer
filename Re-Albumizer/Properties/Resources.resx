@@ -148,4 +148,10 @@
   <data name="InvalidTrackNo" xml:space="preserve">
     <value>Invalid Number</value>
   </data>
+  <data name="SelNewAlbumArt" xml:space="preserve">
+    <value>Select New Album Art</value>
+  </data>
+  <data name="SelectNewFolderPath" xml:space="preserve">
+    <value>Select The Folder You Want The New Folder To Be In</value>
+  </data>
 </root>

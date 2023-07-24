@@ -55,7 +55,7 @@
             <Menu DockPanel.Dock="Top" Height="23">
                 <MenuItem x:Name="FileMenu" Header="_File">
                     <MenuItem Header="_Open" Click="LoadNewAlbum"/>
-                    <!--<MenuItem Header="_Save" Click="SaveAlbumFile"/>-->
+                    <MenuItem Header="_New" Click="NewAlbumFolder"/>
                     <MenuItem Header="_Exit" Click="ExitApp"/>
                 </MenuItem>
                 <MenuItem x:Name="EditMenu" Header="_Edit" IsEnabled="False">
@@ -73,7 +73,13 @@
 
         <Label x:Name="LoadedAlbum_Text" Content="Current Album: None" Margin="10,34,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="517"/>
         <Grid x:Name="MainAlbumControls" Margin="5,57,5,5" >
-            <Image x:Name="AlbumArt" Margin="3,10,0,0" Source="/FISH.jpg" HorizontalAlignment="Left" Width="180" Height="180" VerticalAlignment="Top"/>
+            <Image x:Name="AlbumArt" Margin="3,10,0,0" Source="/FISH.jpg" HorizontalAlignment="Left" Width="180" Height="180" VerticalAlignment="Top">
+                <Image.ContextMenu>
+                    <ContextMenu StaysOpen="true">
+                        <MenuItem Header="Edit" Click="OnChangeAlbumArt"/>
+                    </ContextMenu>
+                </Image.ContextMenu>
+            </Image>
             <TabControl x:Name="tabControl" Margin="566,10,2,2">
                 <TabItem x:Name="SongTab" Header="Song" IsEnabled="False">
                     <Grid Background="#FFE5E5E5">

@@ -61,7 +61,7 @@ namespace Re_Albumizer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AlBUMIZER------------------V 0.1alpha
+        ///   Looks up a localized string similar to AlBUMIZER------------------V 1-Late Beta
         ///the open source album editor and maker
         ///created by Allon Lubitch -- https://github.com/the-most-real-liker-of-c4/ReAlbumizer.
         /// </summary>
@@ -127,11 +127,29 @@ namespace Re_Albumizer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select The Folder You Want The New Folder To Be In.
+        /// </summary>
+        internal static string SelectNewFolderPath {
+            get {
+                return ResourceManager.GetString("SelectNewFolderPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Song File.
         /// </summary>
         internal static string selectnewsongPrompt {
             get {
                 return ResourceManager.GetString("selectnewsongPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select New Album Art.
+        /// </summary>
+        internal static string SelNewAlbumArt {
+            get {
+                return ResourceManager.GetString("SelNewAlbumArt", resourceCulture);
             }
         }
         

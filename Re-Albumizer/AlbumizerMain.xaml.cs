@@ -81,6 +81,70 @@ namespace Re_Albumizer
 
         }
 
+        private void NewAlbumFolder(object sender, RoutedEventArgs e)
+        {
+            AlbumArt.Source = FromHBitmap(new Bitmap(Re_Albumizer.Properties.Resources.Nullart));
+            //SongList.Clear();
+            EditObject edobj = new EditObject(EditObject.InputMode.TEXT)
+            {
+                Title = "Enter New Album Folder Name"
+            };
+            string res = edobj.ShowForm();
+            if (res != "")
+            {
+                var albumFolderLoader = new VistaFolderBrowserDialog
+                {
+                    UseDescriptionForTitle = true,
+                    Description = Properties.Resources.SelectNewFolderPath
+                };
+                if (albumFolderLoader.ShowDialog() == false) return;
+                Directory.CreateDirectory(albumFolderLoader.SelectedPath+@"\"+res);
+                _path = albumFolderLoader.SelectedPath + @"\" + res;
+                LoadedAlbum_Text.Content = "Current Album: " + _path ?? "None";
+                EditMenu.IsEnabled = true;
+                AlbumTab.IsEnabled = true;
+                SongTab.IsEnabled = true;
+                //fixes a dumb problem
+                var selNewFile = new VistaOpenFileDialog
+                {
+                    Multiselect = false,
+                    Title = Properties.Resources.selectnewsongPrompt,
+                    Filter = "*.mp3|*MP3",
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+                };
+                if (selNewFile.ShowDialog() == false) return;
+                FileInfo fl = new FileInfo(selNewFile.FileName);
+                fl.CopyTo(_path + @"\" + fl.Name);
+                File currMp3 = TagLib.File.Create(_path + @"\" + fl.Name);
+                if (currMp3.TagTypes == TagTypes.None)
+                {
+                    SongList.Add(new MusicFile(
+                        0,
+                        Re_Albumizer.Properties.Resources.NoSong,
+                        Re_Albumizer.Properties.Resources.NoSong,
+                        Re_Albumizer.Properties.Resources.NoSong,
+                        _path + @"\" + fl.Name,
+                        currMp3));
+                }
+                else
+                {
+                    SongList.Add(new MusicFile(
+                        currMp3.Tag.Track,
+                        currMp3.Tag.Title,
+                        String.Join(",", currMp3.Tag.Performers),
+                        currMp3.Tag.Album,
+                        _path + @"\" + fl.Name,
+                        currMp3));
+                }
+                fl.Delete();
+                foreach (var song in SongList)
+                {
+                    song.TaglibFile.Tag.TrackCount = (uint)(SongList.Count);
+                }
+            }
+            
+        }
+
         private void LoadNewAlbum(object sender, RoutedEventArgs e)
         {
             EditMenu.IsEnabled = true;
@@ -105,9 +169,6 @@ namespace Re_Albumizer
                 foreach (string file in Directory.GetFiles(_path, "*.mp3"))
                 {
                     File currMp3 = TagLib.File.Create(file);
-                    //throws null with no tags : Tag currTag = currMp3.GetTag(TagTypes.AllTags,true);
-                    //TODO: what if there are no tags??
-                    //use addsong below?
                     
                     
                     SongList.Add(new MusicFile(
@@ -122,7 +183,7 @@ namespace Re_Albumizer
 
                 foreach (var song in SongList)
                 {
-                    song.TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0 ? 0 : SongList.Count) - 1);
+                    song.TaglibFile.Tag.TrackCount = (uint)(SongList.Count);
                 }
                
                 //check for no album art before blowing up the program
@@ -178,17 +239,17 @@ namespace Re_Albumizer
             File currMp3 = TagLib.File.Create(_path + @"\" + fl.Name);
             if (currMp3.TagTypes == TagTypes.None)
             {
-                SongList.Add(new MusicFile(
-                    0,
-                    Re_Albumizer.Properties.Resources.NoSong,
-                    Re_Albumizer.Properties.Resources.NoSong,
-                    Re_Albumizer.Properties.Resources.NoSong,
-                    _path + @"\" + fl.Name,
-                    currMp3));
+                    SongList.Add(new MusicFile(
+                        0,
+                        Re_Albumizer.Properties.Resources.NoSong,
+                        Re_Albumizer.Properties.Resources.NoSong,
+                        Re_Albumizer.Properties.Resources.NoSong,
+                        _path + @"\" + fl.Name,
+                        currMp3));
             }
             else
             {
-                SongList.Add(new MusicFile(
+                    SongList.Add(new MusicFile(
                     currMp3.Tag.Track,
                     currMp3.Tag.Title,
                     String.Join(",", currMp3.Tag.Performers),
@@ -205,7 +266,7 @@ namespace Re_Albumizer
             fl.Delete();
             foreach (var song in SongList)
             {
-                song.TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0 ? 0 : SongList.Count) - 1);
+                song.TaglibFile.Tag.TrackCount = (uint)(SongList.Count);
             }
         }
         #endregion
@@ -330,7 +391,7 @@ namespace Re_Albumizer
             SongList.RemoveAt(SongListElement.SelectedIndex);
             foreach (var song in SongList)
             {
-                song.TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0 ? 0 : SongList.Count) - 1);
+                song.TaglibFile.Tag.TrackCount = (uint)(SongList.Count);
             }
 
         }
@@ -345,7 +406,7 @@ namespace Re_Albumizer
                 SongList.RemoveAt(SongListElement.SelectedIndex);
                 foreach (var song in SongList)
                 {
-                    song.TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0 ? 0 : SongList.Count) - 1);
+                    song.TaglibFile.Tag.TrackCount = (uint)(SongList.Count);
                 }
             }
         }
@@ -384,6 +445,7 @@ namespace Re_Albumizer
                     song.Title = res;
                     SCtrlTitle.Text = $"Title: {res}";
                     song.TaglibFile.Save();
+                    //Refresh ListView
                     ICollectionView view = CollectionViewSource.GetDefaultView(SongList);
                     view.Refresh();
             }
@@ -454,13 +516,45 @@ namespace Re_Albumizer
                 view.Refresh();
             }
         }
+
         private void OnSongSelectChanged(object sender, SelectionChangedEventArgs e)
         {
-            SCtrlTitle.Text = $"Title: {SongList[SongListElement.SelectedIndex].Title}";
-            SCtrlTrackNo.Text = $"Track No.: {SongList[SongListElement.SelectedIndex].TrackId}";
-            SCtrlContribArt.Text = $"Artists: {String.Join(",", SongList[SongListElement.SelectedIndex].TaglibFile.Tag.Performers)}";
-            SCtrlComposer.Text = $"Composers: {String.Join(",", SongList[SongListElement.SelectedIndex].TaglibFile.Tag.Composers)}";
+            if (SongList.Count != 0)
+            {
+                SCtrlTitle.Text = $"Title: {SongList[SongListElement.SelectedIndex].Title}";
+                SCtrlTrackNo.Text = $"Track No.: {SongList[SongListElement.SelectedIndex].TrackId}";
+                SCtrlContribArt.Text =
+                    $"Artists: {String.Join(",", SongList[SongListElement.SelectedIndex].TaglibFile.Tag.Performers)}";
+                SCtrlComposer.Text =
+                    $"Composers: {String.Join(",", SongList[SongListElement.SelectedIndex].TaglibFile.Tag.Composers)}";
+            }
         }
+
         #endregion
+
+
+        private void OnChangeAlbumArt(object sender, RoutedEventArgs e)
+        {
+            var selNewFile = new VistaOpenFileDialog
+            {
+                Multiselect = false,
+                Title = Properties.Resources.SelNewAlbumArt,
+                //Filter = "IDK",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+            };
+            if (selNewFile.ShowDialog() == false) return;
+            foreach (var song in SongList)
+            {
+                AlbumArt.Source = FromHBitmap(new Bitmap(selNewFile.FileName));
+                song.TaglibFile.Tag.Pictures = new IPicture[]
+                {
+                    new Picture(selNewFile.FileName)
+
+                }; 
+                song.TaglibFile.Save();
+            }
+            
+            
+        }
     }
 }
