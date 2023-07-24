@@ -1,44 +1,38 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using TagLib;
 using File = TagLib.File;
 using Ookii.Dialogs.Wpf;
 using System.Windows.Forms;
- 
+using MessageBox = System.Windows.Forms.MessageBox;
+using System.Diagnostics;
+using System.Collections.ObjectModel;
+
 namespace Re_Albumizer
 {
-    public struct MusicFile 
+    public class MusicFile
     {
-        public string Path { get; set; }
-        public string Name { get; set; }
-        public TimeSpan Runningtime { get; set; }
-        public File SongFile { get; set; }
+        public uint TrackId { get; set; }
+        public string Title { get; set; }
+        public string Performers { get; set; }
+        public string Album { get; set; }
+        public string fileLoc { get; set; }
+        public File TaglibFile { get; set; }
 
-        public MusicFile(string path, string name, TimeSpan time, TagLib.File mp3Object)
+        public MusicFile(uint track, string title, string performers, string album, string path, File file)
         {
-            Path = path;
-            Name = name;
-            Runningtime = time;
-
-            SongFile = mp3Object;
+            TrackId = track;
+            Title = title;
+            Performers = performers;
+            Album = album;
+            fileLoc = path;
+            TaglibFile = file;
         }
 
     }
@@ -53,32 +47,31 @@ namespace Re_Albumizer
 
         
         private string? _path = null;
-        [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Local")] 
-        public List<dynamic> _songList = new List<dynamic>();
+        public ObservableCollection<dynamic> SongList = new ObservableCollection<dynamic>();
         
         #endregion
 
-        #region Album Loaders
+        #region Album Modifiers
 
         public AlbumizerMain()
         {
+            
             //what???
-            this.DataContext = this;
             InitializeComponent();
-            SongList.ItemsSource = _songList;
+            SongListElement.ItemsSource=SongList;
         }
 
         private void LoadNewAlbum(object sender, RoutedEventArgs e)
         {
             EditMenu.IsEnabled = true;
-            if (SongList.Items.Count == 0)
+            if (SongListElement.Items.Count == 0)
             {
                 //TODO: Load files in correct order using song index
                 //Load Folder
                 var albumFolderLoader = new VistaFolderBrowserDialog
                 {
                     UseDescriptionForTitle = true,
-                    Description = "Select Album Root Folder"
+                    Description = Properties.Resources.FolderLoaderPrompt
                 };
                 if (albumFolderLoader.ShowDialog() == false) return;
                 _path = albumFolderLoader.SelectedPath;
@@ -92,69 +85,121 @@ namespace Re_Albumizer
                 foreach (string file in Directory.GetFiles(_path, "*.mp3"))
                 {
                     File currMp3 = TagLib.File.Create(file);
-                    //throws null with no tags Tag currTag = currMp3.GetTag(TagTypes.AllTags,true);
+                    //throws null with no tags : Tag currTag = currMp3.GetTag(TagTypes.AllTags,true);
                     //TODO: what if there are no tags??
-
-                    // the two arrays should have the same index for a given item (eg. Splattack! - Squid Squad at index zero on both) this is a dirty trick that will help us later.
-                    _songList.Add(new
-                    {
-                        TrackId=currMp3.Tag.Track,
-                        Title= currMp3.Tag.Title,
-                        Performers= String.Join(",", currMp3.Tag.Performers),
-                        Album=currMp3.Tag.Album,
-                        fileLoc=file,
-                        TaglibFile=currMp3
-
-                    });
+                    //use addsong below?
+                    
+                    
+                    SongList.Add(new MusicFile(
+                        currMp3.Tag.Track,
+                        currMp3.Tag.Title,
+                        String.Join(",",currMp3.Tag.Performers),
+                        currMp3.Tag.Album,
+                        file,
+                        currMp3));
                     
 
 
 
                 }
 
+                SongList[0].TaglibFile.Tag.TrackCount = (uint)((SongList.Count < 0?0:SongList.Count) - 1);
                 //check for no album art before blowing up the program
-                //always use the first album art of the first song (its easier that way)
+                //always use the album art of the first song (its easier that way)
 
                 Bitmap? albumArtBitmap = null;
-                if (_songList[0].TaglibFile.Tag.Pictures.Length == 0)
+                if (SongList[0].TaglibFile.Tag.Pictures.Length == 0)
                 {
                     albumArtBitmap = new Bitmap(Re_Albumizer.Properties.Resources.Nullart);
                 }
                 else
                 {
                     albumArtBitmap = new Bitmap(
-                        new MemoryStream(_songList[0].TaglibFile.Tag.Pictures[0].Data.Data)
+                        new MemoryStream(SongList[0].TaglibFile.Tag.Pictures[0].Data.Data)
                     );
                 }
-                
-                
                 AlbumArt.Source = FromHBitmap(albumArtBitmap);
-
-                //this code is meant for calculating the horizontalextent property and is now kept for historical reasons
-                /*
-                string[] lengthList = new string[SongList.Items.Count];
-                SongList.Items.CopyTo(lengthList, 0);
-                Array.Sort(lengthList, (x, y) => x.Length.CompareTo(y.Length));
-                LengthFinder.Content = lengthList[^1];
-                SongList.HorizontalExtent = LengthFinder.Width;
-                */
                 //force select to prevent playing a null song
-                SongList.SelectedIndex = 0;
-                //PlaySong.Visible = true;
-                //_UpdateControls();
+                SongListElement.SelectedIndex = 0;
                 
+                
+                //you thought we were done here but No!
+                ACtrlAlbumName.Text = SongList[0].TaglibFile.Tag.Album;
+                ACtrlGenre.Text = String.Join(",",SongList[0].TaglibFile.Tag.Genres);
+                ACtrlMainArtist.Text = String.Join(",",SongList[0].TaglibFile.Tag.AlbumArtists);
+                ACtrlYear.Text = SongList[0].TaglibFile.Tag.Year.ToString();
+
+
             }
             else
             {
                 AlbumArt.Source = FromHBitmap(new Bitmap(Re_Albumizer.Properties.Resources.Nullart));
-                _songList.Clear();
-                SongList.Items.Clear();
+                SongList.Clear();
                 //possible LOOP!!! (shouldn't occur)
                 LoadNewAlbum(sender, e);
             }
         }
 
+        private void AddSongToAlbum(object sender, RoutedEventArgs e)
+        {
+            
+            var selNewFile = new VistaOpenFileDialog
+            {
+                Multiselect = false,
+                Title = Properties.Resources.selectnewsongPrompt,
+                Filter = "*.mp3|*MP3",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+            };
+            if (selNewFile.ShowDialog() == false) return;
+            File currMp3 = TagLib.File.Create(selNewFile.FileName);
+            if (currMp3.TagTypes != TagTypes.AllTags)
+            {
+                SongList.Add(new MusicFile(
+                    0,
+                    Re_Albumizer.Properties.Resources.NoSong,
+                    Re_Albumizer.Properties.Resources.NoSong,
+                    Re_Albumizer.Properties.Resources.NoSong,
+                    selNewFile.FileName,
+                    currMp3));
+            }
+            else
+            {
+                SongList.Add(new MusicFile(
+                    currMp3.Tag.Track,
+                    currMp3.Tag.Title,
+                    String.Join(",", currMp3.Tag.Performers),
+                    currMp3.Tag.Album,
+                    selNewFile.FileName,
+                    currMp3));
+            }
+            SongList[0].TaglibFile.Tag.TrackCount = (SongList.Count < 0 ? 0 : SongList.Count) - 1;
+        }
 
+        private void OpenAlbumFolder(object sender, RoutedEventArgs e)
+        {
+            Process.Start("explorer.exe", _path);
+        }
+
+        private void RemoveitemfromAlbum(object sender, RoutedEventArgs e)
+        {
+            SongList[SongListElement.SelectedIndex].SongFile.RemoveTags(TagTypes.AllTags);
+            SongList.RemoveAt(SongListElement.SelectedIndex);
+            SongList[0].TaglibFile.Tag.TrackCount = (SongList.Count < 0 ? 0 : SongList.Count) - 1;
+
+        }
+
+        private void DeleteSongFromDisk(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show(string.Format(Properties.Resources.DeleteConfirmText, SongList[SongListElement.SelectedIndex].Name),
+                    Properties.Resources.DeleteConfirmCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation,
+                    MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
+            {
+                new FileInfo(SongList[SongListElement.SelectedIndex].Path).Delete();
+                SongList.RemoveAt(SongListElement.SelectedIndex);
+                SongList[0].TaglibFile.Tag.TrackCount = (SongList.Count < 0 ? 0 : SongList.Count) - 1;
+            }
+        }
+        
         #endregion
 
         #region Auxillary Functions
@@ -172,14 +217,75 @@ namespace Re_Albumizer
         private void OpenAboutPage(object sender, RoutedEventArgs e)
         {
             //show about page
+            new EditObject(IntPtr.Zero).ShowDialog();
+        }
+        private void AAlbumNameChange(object sender, RoutedEventArgs e)
+        {
+            EditObject edobj = new EditObject(EditObject.InputMode.TEXT);
+            edobj.Title = "Enter New Album Name";
+            string res = edobj.ShowForm();
+            foreach (MusicFile song in SongList)
+            {
+                song.TaglibFile.Tag.Album = res;
+                song.Album = res;
+                ACtrlAlbumName.Text = res;
+                song.TaglibFile.Save();
+            }
+        }
+
+        private void AYearChange(object sender, RoutedEventArgs e)
+        {
+            EditObject edobj = new EditObject(EditObject.InputMode.TEXT);
+            edobj.Title = "Enter Album Year";
+            string res = edobj.ShowForm();
+            MessageBox.Show(res);
+            foreach (MusicFile song in SongList)
+            {
+                try
+                {
+                    song.TaglibFile.Tag.Year = uint.Parse(res);
+                    ACtrlYear.Text = res;
+                    song.TaglibFile.Save();
+                }
+                catch (FormatException ex)
+                {
+                    if (MessageBox.Show(Properties.Resources.YearChangeYearMalformatText,
+                            Properties.Resources.YearChangeYearMalformatCaption, MessageBoxButtons.RetryCancel,
+                            MessageBoxIcon.Error) == System.Windows.Forms.DialogResult.Cancel) return;
+                    AYearChange(sender,e);
+                }
+
+                
+            }
+        }
+
+        private void AArtistChange(object sender, RoutedEventArgs e)
+        {
+            EditObject edobj = new EditObject(EditObject.InputMode.ARRAYTEXT);
+            edobj.Title = "Enter Artists Name";
+            string[] res = edobj.ShowForm();
+            foreach (MusicFile song in SongList)
+            {
+                song.TaglibFile.Tag.AlbumArtists=res;
+                ACtrlMainArtist.Text = String.Join(",", res);
+                song.TaglibFile.Save();
+            }
+        }
+
+        private void AGenreChange(object sender, RoutedEventArgs e)
+        {
+            EditObject edobj = new EditObject(EditObject.InputMode.ARRAYTEXT);
+            edobj.Title = "Enter Genre";
+            string[] res = edobj.ShowForm();
+            foreach (MusicFile song in SongList)
+            {
+                song.TaglibFile.Tag.Genres = res;
+                ACtrlGenre.Text = String.Join(",", res);
+                song.TaglibFile.Save();
+            }
         }
         #endregion
 
-        private void SaveAlbumFile(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
-        
     }
 }

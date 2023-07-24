@@ -1,0 +1,3 @@
+﻿AlBUMIZER------------------V 0.1alpha
+the open source album editor and maker
+created by Allon Lubitch -- https://github.com/the-most-real-liker-of-c4/ReAlbumizer

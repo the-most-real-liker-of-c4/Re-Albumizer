@@ -7,46 +7,86 @@
         x:Class="Re_Albumizer.AlbumizerMain"
         mc:Ignorable="d"
         
-        Title="Albumizer" SizeToContent="WidthAndHeight" Icon="/wmsc.ico" MinWidth="773.61" MinHeight="449.96" Height="443" Width="792">
+        Title="Albumizer" SizeToContent="WidthAndHeight" Icon="/wmsc.ico" MinWidth="773.61" MinHeight="449.96" Height="443" Width="792" ResizeMode="CanMinimize">
 
-    <Grid Height="434" VerticalAlignment="Bottom">
-        <DockPanel HorizontalAlignment="Center" Width="792" Margin="0,0,0,403" Height="31" VerticalAlignment="Bottom">
+    <Grid Height="434" VerticalAlignment="Top">
+        <DockPanel Margin="0,0,0,405" VerticalAlignment="Top">
             <Menu DockPanel.Dock="Top" Height="23">
                 <MenuItem x:Name="FileMenu" Header="_File">
                     <MenuItem Header="_Open" Click="LoadNewAlbum"/>
-                    <MenuItem Header="_Save" Click="SaveAlbumFile"/>
+                    <!--<MenuItem Header="_Save" Click="SaveAlbumFile"/>-->
                     <MenuItem Header="_Exit" Click="ExitApp"/>
                 </MenuItem>
-                <MenuItem x:Name="EditMenu" Header="_Edit" IsEnabled="False"/>
-                <MenuItem x:Name="HelpMenu" Header="_Help"/>
+                <MenuItem x:Name="EditMenu" Header="_Edit" IsEnabled="False">
+                    <MenuItem Header="Open Album Folder" Click="OpenAlbumFolder"/>
+                    <MenuItem Header="Add New Song" Click="AddSongToAlbum"/>
+                    <MenuItem Header="Remove Song" Click="RemoveitemfromAlbum"/>
+                    <MenuItem Header="Delete Song" Click="DeleteSongFromDisk"/>
+                </MenuItem>
+                <MenuItem x:Name="HelpMenu" Header="_Help">
+                    <MenuItem Header="_About" Click="OpenAboutPage"/>
+                </MenuItem>
             </Menu>
             <StackPanel/>
         </DockPanel>
-        <Label x:Name="LoadedAlbum_Text" Content="Current Album: None" Width="517" Height="26" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,265,377"/>
-        <Grid x:Name="MainAlbumControls" Margin="0,57,5,0" Height="372" VerticalAlignment="Top" HorizontalAlignment="Right" Width="782" >
+
+        <Label x:Name="LoadedAlbum_Text" Content="Current Album: None" Margin="10,34,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="517"/>
+        <Grid x:Name="MainAlbumControls" Margin="5,57,5,5" >
             <Image x:Name="AlbumArt" Margin="3,10,0,0" Source="/FISH.jpg" HorizontalAlignment="Left" Width="180" Height="180" VerticalAlignment="Top"/>
-            <TabControl x:Name="tabControl" Margin="0,10,0,0" HorizontalAlignment="Right" Width="216">
+            <TabControl x:Name="tabControl" Margin="566,10,0,0" Width="216">
                 <TabItem Header="Song">
                     <Grid Background="#FFE5E5E5"/>
                 </TabItem>
                 <TabItem Header="Album">
-                    <Grid Background="#FFE5E5E5"/>
+                    <Grid Background="#FFE5E5E5">
+                        <StackPanel>
+                            <TextBlock x:Name="ACtrlAlbumName">
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu StaysOpen="true">
+                                        <MenuItem Header="Edit" Click="AAlbumNameChange"/>
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
+                            </TextBlock>
+                            <TextBlock x:Name="ACtrlGenre">
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu StaysOpen="true">
+                                        <MenuItem Header="Edit" Click="AGenreChange"/>
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
+                            </TextBlock>
+                            <TextBlock x:Name="ACtrlMainArtist">
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu StaysOpen="true">
+                                        <MenuItem Header="Edit" Click="AArtistChange"/>
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
+                            </TextBlock>
+                            <TextBlock x:Name="ACtrlYear">
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu StaysOpen="true">
+                                        <MenuItem Header="Edit" Click="AYearChange"/>
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
+                            </TextBlock>
+                            
+                        </StackPanel>
+                    </Grid>
                 </TabItem>
             </TabControl>
-            <ListView x:Name="SongList" d:ItemsSource="{Binding _songList}" Margin="0,10,221,0" ScrollViewer.HorizontalScrollBarVisibility="Visible" HorizontalAlignment="Right" Width="348">
+            <ListView x:Name="SongListElement" d:ItemsSource="{Binding SongList, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Margin="202,0,0,0" ScrollViewer.HorizontalScrollBarVisibility="Visible" Width="359" HorizontalAlignment="Left" VerticalAlignment="Center" Height="352" HorizontalContentAlignment="Stretch">
                 <ListView.View>
                     <GridView>
 
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Title}" Header="Title" Width="100"/>
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Performers}" Header="Performers" Width="100"/>
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=TrackId}" Header="Track Number" Width="100"/>
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Album}" Header="Album" Width="100"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Title}" Header="Title" Width="100"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Performers}" Header="Performers" Width="100"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding TrackId}" Header="Track Number" Width="100"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Album}" Header="Album" Width="100"/>
                     </GridView>
                 </ListView.View>
             </ListView>
 
         </Grid>
-        <Label x:Name="LengthFinder" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Hidden"/>
+        <!--<Label x:Name="LengthFinder" Content="Label" HorizontalAlignment="Left" Margin="581,26,0,0" VerticalAlignment="Top" Visibility="Hidden"/>-->
 
     </Grid>
 </Window>

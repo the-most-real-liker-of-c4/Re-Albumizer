@@ -61,12 +61,86 @@ namespace Re_Albumizer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AlBUMIZER------------------V 0.1alpha
+        ///the open source album editor and maker
+        ///created by Allon Lubitch -- https://github.com/the-most-real-liker-of-c4/ReAlbumizer.
+        /// </summary>
+        internal static string AboutText {
+            get {
+                return ResourceManager.GetString("AboutText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Confirmation.
+        /// </summary>
+        internal static string DeleteConfirmCaption {
+            get {
+                return ResourceManager.GetString("DeleteConfirmCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete song {0}.
+        /// </summary>
+        internal static string DeleteConfirmText {
+            get {
+                return ResourceManager.GetString("DeleteConfirmText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Album Root Folder.
+        /// </summary>
+        internal static string FolderLoaderPrompt {
+            get {
+                return ResourceManager.GetString("FolderLoaderPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        internal static string NoSong {
+            get {
+                return ResourceManager.GetString("NoSong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Nullart {
             get {
                 object obj = ResourceManager.GetObject("Nullart", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Song File.
+        /// </summary>
+        internal static string selectnewsongPrompt {
+            get {
+                return ResourceManager.GetString("selectnewsongPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An Issue Has Been Raised.
+        /// </summary>
+        internal static string YearChangeYearMalformatCaption {
+            get {
+                return ResourceManager.GetString("YearChangeYearMalformatCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Malformatted Year!.
+        /// </summary>
+        internal static string YearChangeYearMalformatText {
+            get {
+                return ResourceManager.GetString("YearChangeYearMalformatText", resourceCulture);
             }
         }
     }
