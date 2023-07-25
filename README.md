@@ -2,7 +2,7 @@
 A simplicity simple album editor
 
 
-![image](Albumizer.png)
+![image](Albumizer.png)<br>
 *deary me! it looks like this idiot is using windows 7!*
 
 ## Re Albumizer Is The Replacement For Albumizer,
