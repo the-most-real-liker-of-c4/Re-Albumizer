@@ -388,12 +388,15 @@ namespace Re_Albumizer
         {
             SongList[SongListElement.SelectedIndex].TaglibFile.RemoveTags(TagTypes.AllTags);
             SongList[SongListElement.SelectedIndex].TaglibFile.Save();
-            SongList.RemoveAt(SongListElement.SelectedIndex);
+            int selInd = SongListElement.SelectedIndex;
+            //fix a crash
+            SongListElement.SelectedIndex = 0;
+            SongList.RemoveAt(selInd);
+            
             foreach (var song in SongList)
             {
                 song.TaglibFile.Tag.TrackCount = (uint)(SongList.Count);
             }
-
         }
 
         private void DeleteSongFromDisk(object sender, RoutedEventArgs e)
@@ -403,11 +406,15 @@ namespace Re_Albumizer
                     MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
             {
                 new FileInfo(SongList[SongListElement.SelectedIndex].fileLoc).Delete();
-                SongList.RemoveAt(SongListElement.SelectedIndex);
+                int selInd = SongListElement.SelectedIndex;
+                //fix a crash
+                SongListElement.SelectedIndex = 0;
+                SongList.RemoveAt(selInd);
                 foreach (var song in SongList)
                 {
                     song.TaglibFile.Tag.TrackCount = (uint)(SongList.Count);
                 }
+                
             }
         }
 
@@ -519,14 +526,21 @@ namespace Re_Albumizer
 
         private void OnSongSelectChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (SongList.Count != 0)
+            try
             {
-                SCtrlTitle.Text = $"Title: {SongList[SongListElement.SelectedIndex].Title}";
-                SCtrlTrackNo.Text = $"Track No.: {SongList[SongListElement.SelectedIndex].TrackId}";
-                SCtrlContribArt.Text =
-                    $"Artists: {String.Join(",", SongList[SongListElement.SelectedIndex].TaglibFile.Tag.Performers)}";
-                SCtrlComposer.Text =
-                    $"Composers: {String.Join(",", SongList[SongListElement.SelectedIndex].TaglibFile.Tag.Composers)}";
+                if (SongList.Count != 0)
+                {
+                    SCtrlTitle.Text = $"Title: {SongList[SongListElement.SelectedIndex].Title}";
+                    SCtrlTrackNo.Text = $"Track No.: {SongList[SongListElement.SelectedIndex].TrackId}";
+                    SCtrlContribArt.Text =
+                        $"Artists: {String.Join(",", SongList[SongListElement.SelectedIndex].TaglibFile.Tag.Performers)}";
+                    SCtrlComposer.Text =
+                        $"Composers: {String.Join(",", SongList[SongListElement.SelectedIndex].TaglibFile.Tag.Composers)}";
+                }
+            }
+            catch (Exception ex)
+            {
+                // just ignore it
             }
         }
 
