@@ -388,10 +388,7 @@ namespace Re_Albumizer
         {
             SongList[SongListElement.SelectedIndex].TaglibFile.RemoveTags(TagTypes.AllTags);
             SongList[SongListElement.SelectedIndex].TaglibFile.Save();
-            int selInd = SongListElement.SelectedIndex;
-            //fix a crash
-            SongListElement.SelectedIndex = 0;
-            SongList.RemoveAt(selInd);
+            SongList.RemoveAt(SongListElement.SelectedIndex);
             
             foreach (var song in SongList)
             {
@@ -406,10 +403,7 @@ namespace Re_Albumizer
                     MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
             {
                 new FileInfo(SongList[SongListElement.SelectedIndex].fileLoc).Delete();
-                int selInd = SongListElement.SelectedIndex;
-                //fix a crash
-                SongListElement.SelectedIndex = 0;
-                SongList.RemoveAt(selInd);
+                SongList.RemoveAt(SongListElement.SelectedIndex);
                 foreach (var song in SongList)
                 {
                     song.TaglibFile.Tag.TrackCount = (uint)(SongList.Count);
@@ -541,6 +535,7 @@ namespace Re_Albumizer
             catch (Exception ex)
             {
                 // just ignore it
+                SongListElement.SelectedIndex = 0;
             }
         }
 
