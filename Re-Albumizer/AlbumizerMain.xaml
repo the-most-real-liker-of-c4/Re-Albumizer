@@ -9,7 +9,7 @@
         x:Class="Re_Albumizer.AlbumizerMain"
         mc:Ignorable="d"
         
-        Title="Albumizer" Icon="/wmsc.ico" MinWidth="773.61" MinHeight="449.96" Height="443" Width="792" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight" WindowStyle="ThreeDBorderWindow">
+        Title="Albumizer" Icon="/wmsc.ico" MinWidth="773.61" MinHeight="449.96" Height="443" Width="792" ResizeMode="CanResizeWithGrip" SizeToContent="WidthAndHeight">
     <Window.Resources>
         <Style x:Key="OnHoverBlue" TargetType="TextBlock">
             <Setter Property="Background" Value=" #00FFFFFF"></Setter>
@@ -50,26 +50,7 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    <Grid Height="434" VerticalAlignment="Top">
-        <DockPanel Margin="0,0,0,405" VerticalAlignment="Top">
-            <Menu DockPanel.Dock="Top" Height="23">
-                <MenuItem x:Name="FileMenu" Header="_File">
-                    <MenuItem Header="_Open" Click="LoadNewAlbum"/>
-                    <MenuItem Header="_New" Click="NewAlbumFolder"/>
-                    <MenuItem Header="_Exit" Click="ExitApp"/>
-                </MenuItem>
-                <MenuItem x:Name="EditMenu" Header="_Edit" IsEnabled="False">
-                    <MenuItem Header="Open Album Folder" Click="OpenAlbumFolder"/>
-                    <MenuItem Header="Add New Song" Click="AddSongToAlbum"/>
-                    <MenuItem Header="Remove Song" Click="RemoveItemFromAlbum"/>
-                    <MenuItem Header="Delete Song" Click="DeleteSongFromDisk"/>
-                </MenuItem>
-                <MenuItem x:Name="HelpMenu" Header="_Help">
-                    <MenuItem Header="_About" Click="OpenAboutPage"/>
-                </MenuItem>
-            </Menu>
-            <StackPanel/>
-        </DockPanel>
+    <Grid>
 
         <Label x:Name="LoadedAlbum_Text" Content="Current Album: None" Margin="10,34,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="517"/>
         <Grid x:Name="MainAlbumControls" Margin="5,57,5,5" >
@@ -80,7 +61,7 @@
                     </ContextMenu>
                 </Image.ContextMenu>
             </Image>
-            <TabControl x:Name="tabControl" Margin="566,10,2,2">
+            <TabControl x:Name="tabControl" Margin="0,10,2,2" HorizontalAlignment="Right" Width="214">
                 <TabItem x:Name="SongTab" Header="Song" IsEnabled="False">
                     <Grid Background="#FFE5E5E5">
                         <StackPanel>
@@ -168,19 +149,91 @@
                     </Grid>
                 </TabItem>
             </TabControl>
-            <ListView x:Name="SongListElement" SelectionChanged="OnSongSelectChanged" d:ItemsSource="{Binding SongList, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Margin="202,0,0,0" ScrollViewer.HorizontalScrollBarVisibility="Visible" Width="359" HorizontalAlignment="Left" VerticalAlignment="Center" Height="352" HorizontalContentAlignment="Stretch">
+            <ListView x:Name="SongListElement" SelectionChanged="OnSongSelectChanged" d:ItemsSource="{Binding SongList}" Margin="202,10,221,10" ScrollViewer.HorizontalScrollBarVisibility="Visible" HorizontalContentAlignment="Stretch">
+                <ListView.Resources>
+                    <ContextMenu x:Key="ItemContextMenu" >
+                        <MenuItem Header="Edit" Click="EditFromListDirect"  CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" />
+                       
+                    </ContextMenu>
+                </ListView.Resources>
+                <!--
+                <ListView.ItemContainerStyle
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListFocus" />
+                        <Setter Property="ContextMenu" Value="{StaticResource  ItemContextMenu}"/>
+
+                    </Style>
+                </ListView.ItemContainerStyle-->
                 <ListView.View>
                     <GridView>
-
-                        <GridViewColumn DisplayMemberBinding="{Binding Title}" Header="Title" Width="100"/>
-                        <GridViewColumn DisplayMemberBinding="{Binding Performers}" Header="Performers" Width="100"/>
-                        <GridViewColumn DisplayMemberBinding="{Binding TrackId}" Header="Track Number" Width="100"/>
-                        <GridViewColumn DisplayMemberBinding="{Binding Album}" Header="Album" Width="100"/>
+                        <GridViewColumn Header="Title" Width="85">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel x:Name="TITLEBOX" ContextMenu="{StaticResource ItemContextMenu}">
+                                        <TextBox Text="{Binding Path=Title}" LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                        <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Performers" Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel x:Name="ARTISTBOX" ContextMenu="{StaticResource ItemContextMenu}">
+                                        <TextBox Text="{Binding Path=Performers}"  LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                        <TextBlock Text="{Binding Path=Performers}"></TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Track Number" Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel x:Name="TRACKBOX" ContextMenu="{StaticResource ItemContextMenu}">
+                                        <TextBox Text="{Binding Path=TrackId}" LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                        <TextBlock Text="{Binding Path=TrackId}"></TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Album" Width="68">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel x:Name="ALBUMBOX" ContextMenu="{StaticResource ItemContextMenu}">
+                                        <TextBox Text="{Binding Path=Album}" LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit"  Visibility="Collapsed"/>
+                                        <TextBlock Text="{Binding Path=Album}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <!-- Origional GridViewColumn Code For Reference-->
+                        <!--<GridViewColumn DisplayMemberBinding="{Binding ...}" Header="..." Width="100"/>-->
                     </GridView>
                 </ListView.View>
             </ListView>
 
         </Grid>
+        <DockPanel Height="23" VerticalAlignment="Top">
+            <Menu DockPanel.Dock="Top" Height="23">
+                <MenuItem x:Name="FileMenu" Header="_File">
+                    <MenuItem Header="_Open" Click="LoadNewAlbum"/>
+                    <MenuItem Header="_New" Click="NewAlbumFolder"/>
+                    <MenuItem Header="Apply Changes" Click="SaveVal"/>
+                    <MenuItem Header="_Exit" Click="ExitApp"/>
+                </MenuItem>
+                <MenuItem x:Name="EditMenu" Header="_Edit" IsEnabled="False">
+                    <MenuItem Header="Open Album Folder" Click="OpenAlbumFolder"/>
+                    <MenuItem Header="Add New Song" Click="AddSongToAlbum"/>
+                    <MenuItem Header="Remove Song" Click="RemoveItemFromAlbum"/>
+                    <MenuItem Header="Delete Song" Click="DeleteSongFromDisk"/>
+                </MenuItem>
+                <MenuItem x:Name="HelpMenu" Header="_Help">
+                    <MenuItem Header="_About" Click="OpenAboutPage"/>
+                </MenuItem>
+            </Menu>
+            <StackPanel/>
+        </DockPanel>
+        <!--Dirty Cheat-->
         <!--<Label x:Name="LengthFinder" Content="Label" HorizontalAlignment="Left" Margin="581,26,0,0" VerticalAlignment="Top" Visibility="Hidden"/>-->
 
     </Grid>
