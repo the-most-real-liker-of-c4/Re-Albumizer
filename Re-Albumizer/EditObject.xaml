@@ -8,10 +8,10 @@
         Title="The Temporary Prompt" Height="325" Width="467" ResizeMode="NoResize" Icon="/wmsc.ico" SizeToContent="WidthAndHeight" WindowStyle="ToolWindow">
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
         <Grid.Background>
-            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                <GradientStop Color="#59436B95" Offset="1"/>
-                <GradientStop Color="White" Offset="0"/>
-            </LinearGradientBrush>
+            <RadialGradientBrush Center="1,1" GradientOrigin="1,1" SpreadMethod="Reflect">
+                <GradientStop Color="{DynamicResource {x:Static SystemColors.GradientActiveCaptionColorKey}}"/>
+                <GradientStop Color="White" Offset="1"/>
+            </RadialGradientBrush>
         </Grid.Background>
         <Grid x:Name="ArrayTextInput" HorizontalAlignment="Center" VerticalAlignment="Center" Height="299" Width="298">
             <Grid.ColumnDefinitions>
@@ -36,12 +36,6 @@
             </TextBox.BorderBrush>
         </TextBox>
         <Button x:Name="Okbutton" Content="OK" HorizontalAlignment="Left" Margin="372,278,5,5" VerticalAlignment="Top" Width="64" Click="Okbutton_OnClick"/>
-        <Grid x:Name="AboutGrid" d:IsHidden="True">
-            <Image x:Name="AboutImage" HorizontalAlignment="Left" Height="249" Margin="10,10,0,0" VerticalAlignment="Top" Width="186" Source="/FISH.jpg"/>
-            <TextBlock x:Name="AboutText" xml:space="preserve" HorizontalAlignment="Left" Margin="231,10,0,0" Text="" VerticalAlignment="Top" Height="248" Width="172" TextWrapping="Wrap">
-               
-            </TextBlock>
-        </Grid>
 
     </Grid>
 </Window>

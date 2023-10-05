@@ -63,7 +63,7 @@ namespace Re_Albumizer.Properties {
         /// <summary>
         ///   Looks up a localized string similar to AlBUMIZER------------------V 1-Late Beta
         ///the open source album editor and maker
-        ///created by Allon Lubitch -- https://github.com/the-most-real-liker-of-c4/ReAlbumizer.
+        ///created by Allon Lubitch -- github.com/the-most-real-liker-of-c4/Re-Albumizer.
         /// </summary>
         internal static string AboutText {
             get {
@@ -154,7 +154,16 @@ namespace Re_Albumizer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An Issue Has Been Raised.
+        ///   Looks up a localized string similar to Cannot Write to File.
+        /// </summary>
+        internal static string WriteFileFailedCaption {
+            get {
+                return ResourceManager.GetString("WriteFileFailedCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string YearChangeYearMalformatCaption {
             get {
@@ -163,7 +172,7 @@ namespace Re_Albumizer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Malformatted Year!.
+        ///   Looks up a localized string similar to Malformatted Year.
         /// </summary>
         internal static string YearChangeYearMalformatText {
             get {

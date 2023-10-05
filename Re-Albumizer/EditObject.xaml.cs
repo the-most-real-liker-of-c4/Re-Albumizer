@@ -16,24 +16,12 @@ namespace Re_Albumizer
         {
             InitializeComponent();
         }
-        /// <summary>
-        /// Ultra Secret Constructor for using the about page
-        /// </summary>
-        public EditObject(IntPtr i)
-        {
-            InitializeComponent();
-            AboutGrid.Visibility=Visibility.Visible;
-            this.Title = "The About Page";
-            Okbutton.Content = "Shut Up";
-            AboutText.Text = Re_Albumizer.Properties.Resources.AboutText;
-            this.WindowStyle = WindowStyle.SingleBorderWindow;
-            ArrayTextInput.Visibility = Visibility.Collapsed;
-            TextBoxInput.Visibility = Visibility.Collapsed;
-        }
+        
+        
         public EditObject(InputMode i)
         {
             InitializeComponent();
-            AboutGrid.Visibility = Visibility.Collapsed;
+            
             _currentInputMode = i;
             switch (i)
             {

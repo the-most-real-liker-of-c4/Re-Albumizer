@@ -8,48 +8,8 @@
         xmlns:local="clr-namespace:Re_Albumizer"
         x:Class="Re_Albumizer.AlbumizerMain"
         mc:Ignorable="d"
-        
-        Title="Albumizer" Icon="/wmsc.ico" MinWidth="773.61" MinHeight="449.96" Height="443" Width="792" ResizeMode="CanResizeWithGrip" SizeToContent="WidthAndHeight">
-    <Window.Resources>
-        <Style x:Key="OnHoverBlue" TargetType="TextBlock">
-            <Setter Property="Background" Value=" #00FFFFFF"></Setter>
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="TextBlock.MouseEnter">
-                    <EventTrigger.Actions>
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <ColorAnimation 
-                                    AutoReverse="False" 
-                                    Duration="0:0:0.6" 
-                                    To="#7f002366"
-                                    AccelerationRatio="1" 
-                                    Storyboard.TargetProperty="Background.Color"
-                                    FillBehavior="HoldEnd">
-                                </ColorAnimation>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger.Actions>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="TextBlock.MouseLeave">
-                    <EventTrigger.Actions>
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <ColorAnimation 
-                                    AutoReverse="False" 
-                                    Duration="0:0:0.6" 
-                                    To="#00ffffff"
-                                    AccelerationRatio="1" 
-                                    Storyboard.TargetProperty="Background.Color"
-                                    FillBehavior="HoldEnd">
-                                </ColorAnimation>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger.Actions>
-
-                </EventTrigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
+        Title="Albumizer" Icon="/wmsc.ico" MinWidth="773.61" MinHeight="449.96" Height="443" Width="792"
+        ResizeMode="CanResizeWithGrip" SizeToContent="WidthAndHeight" Closing="CheckUnsavedChanges">
     <Grid>
 
         <Label x:Name="LoadedAlbum_Text" Content="Current Album: None" Margin="10,34,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="517"/>
@@ -62,11 +22,65 @@
                 </Image.ContextMenu>
             </Image>
             <TabControl x:Name="tabControl" Margin="0,10,2,2" HorizontalAlignment="Right" Width="214">
+
+                <TabControl.Resources>
+                    <LinearGradientBrush x:Key="MouseOnBrush" StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="Transparent" Offset="0"/>
+                        <GradientStop Color="#ffebf3fd" Offset="1"/>
+                    </LinearGradientBrush>
+                    <Duration x:Key="MouseEnterDuration">0:0:0.1</Duration>
+                    <Duration x:Key="MouseLeaveDuration">0:0:0.05</Duration>
+                    <Style TargetType="TextBlock">
+                        <Style.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <local:BrushAnimation
+                                            Storyboard.TargetProperty="Background" 
+                                            Duration="{StaticResource MouseEnterDuration}" From="Transparent"  To="{StaticResource MouseOnBrush}"></local:BrushAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <local:BrushAnimation
+                                            Storyboard.TargetProperty="Background" 
+                                            Duration="{StaticResource MouseLeaveDuration}"  To="Transparent"></local:BrushAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Style.Triggers>
+                        <Setter Property="Padding" Value="1,1,1,1"></Setter>
+                        <!--<Setter Property="Background" Value=""></Setter>-->
+                    </Style>
+                    <Style TargetType="Border">
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="CornerRadius" Value="2"/>
+                        <Style.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <local:BrushAnimation Storyboard.TargetProperty="BorderBrush"  To="#ffc4ddfa" Duration="{StaticResource MouseEnterDuration}"></local:BrushAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <local:BrushAnimation Storyboard.TargetProperty="BorderBrush"  To="Transparent" Duration="{StaticResource MouseLeaveDuration}"></local:BrushAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Style.Triggers>
+                        <!--<Setter Property="BorderBrush" Value="#ffc4ddfa"></Setter>-->
+                    </Style>
+                </TabControl.Resources>
                 <TabItem x:Name="SongTab" Header="Song" IsEnabled="False">
-                    <Grid Background="#FFE5E5E5">
+                    <Grid Background="#f4f7fb">
                         <StackPanel>
-                            <Border x:Name="SCtrlTitleBorder" BorderThickness="1" CornerRadius="1">
-                                <TextBlock x:Name="SCtrlTitle" MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                            <Border x:Name="SCtrlTitleBorder">
+                                <TextBlock x:Name="SCtrlTitle" Background="{x:Null}" >
                                     <TextBlock.ContextMenu>
                                         <ContextMenu StaysOpen="true">
                                             <MenuItem Header="Edit" Click="OnSCtrlTitle"/>
@@ -74,8 +88,8 @@
                                     </TextBlock.ContextMenu>
                                 </TextBlock>
                             </Border>
-                            <Border x:Name="SCtrlTrackNoBorder" BorderThickness="1" CornerRadius="1">
-                                <TextBlock x:Name="SCtrlTrackNo" MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                            <Border x:Name="SCtrlTrackNoBorder" >
+                                <TextBlock x:Name="SCtrlTrackNo">
                                     <TextBlock.ContextMenu>
                                         <ContextMenu StaysOpen="true">
                                             <MenuItem Header="Edit" Click="OnSCtrlTrackNo"/>
@@ -83,8 +97,8 @@
                                     </TextBlock.ContextMenu>
                                 </TextBlock>
                             </Border>
-                            <Border x:Name="SCtrlContribArtBorder" BorderThickness="1" CornerRadius="1">
-                                <TextBlock x:Name="SCtrlContribArt" MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                            <Border x:Name="SCtrlContribArtBorder" >
+                                <TextBlock x:Name="SCtrlContribArt"  >
                                     <TextBlock.ContextMenu>
                                         <ContextMenu StaysOpen="true">
                                             <MenuItem Header="Edit" Click="OnSCtrlContribArt"/>
@@ -92,8 +106,8 @@
                                     </TextBlock.ContextMenu>
                                 </TextBlock>
                             </Border>
-                            <Border x:Name="SCtrlComposeBorder" BorderThickness="1" CornerRadius="1">
-                                <TextBlock x:Name="SCtrlComposer" MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                            <Border x:Name="SCtrlComposeBorder" >
+                                <TextBlock x:Name="SCtrlComposer">
                                     <TextBlock.ContextMenu>
                                         <ContextMenu StaysOpen="true">
                                             <MenuItem Header="Edit" Click="OnSCtrlComposer"/>
@@ -105,11 +119,11 @@
                     </Grid>
                 </TabItem>
                 <TabItem x:Name="AlbumTab" Header="Album" IsEnabled="False">
-                    <Grid Background="#FFE5E5E5">
+                    <Grid Background="#f4f7fb">
                         <StackPanel>
                             <!--Style="{StaticResource OnHoverBlue}"-->
-                            <Border x:Name="ACtrlAlbumBorder" BorderThickness="1" CornerRadius="1">
-                                <TextBlock x:Name="ACtrlAlbumName" MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                            <Border x:Name="ACtrlAlbumBorder" >
+                                <TextBlock x:Name="ACtrlAlbumName" >
                                     <TextBlock.ContextMenu>
                                         <ContextMenu StaysOpen="true">
                                             <MenuItem Header="Edit" Click="AAlbumNameChange"/>
@@ -117,8 +131,8 @@
                                     </TextBlock.ContextMenu>
                                 </TextBlock>
                             </Border>
-                            <Border x:Name="ACtrlGenreBorder" BorderThickness="1" CornerRadius="1">
-                                <TextBlock x:Name="ACtrlGenre"  MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                            <Border x:Name="ACtrlGenreBorder" >
+                                <TextBlock x:Name="ACtrlGenre" >
                                     <TextBlock.ContextMenu>
                                         <ContextMenu StaysOpen="true">
                                             <MenuItem Header="Edit" Click="AGenreChange"/>
@@ -126,8 +140,8 @@
                                     </TextBlock.ContextMenu>
                                 </TextBlock>
                             </Border>
-                            <Border x:Name="ACtrlMainArtistBorder" BorderThickness="1" CornerRadius="1">
-                                <TextBlock x:Name="ACtrlMainArtist"  MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                            <Border x:Name="ACtrlMainArtistBorder" >
+                                <TextBlock x:Name="ACtrlMainArtist" >
                                     <TextBlock.ContextMenu>
                                         <ContextMenu StaysOpen="true">
                                             <MenuItem Header="Edit" Click="AArtistChange"/>
@@ -135,8 +149,8 @@
                                     </TextBlock.ContextMenu>
                                 </TextBlock>
                             </Border>
-                            <Border x:Name="ACtrlYearBorder" BorderThickness="1" CornerRadius="1">
-                                <TextBlock x:Name="ACtrlYear"  MouseEnter="CtrlHoverOn" MouseLeave="CtrlHoverOff" Margin="1,1,1,1">
+                            <Border x:Name="ACtrlYearBorder" >
+                                <TextBlock x:Name="ACtrlYear" >
                                     <TextBlock.ContextMenu>
                                         <ContextMenu StaysOpen="true">
                                             <MenuItem Header="Edit" Click="AYearChange"/>
