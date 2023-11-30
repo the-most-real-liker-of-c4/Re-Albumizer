@@ -19,5 +19,10 @@ internal static class Settings
 		{
 			SettingsKey.SetValue("ShowSaveDialog", 1, RegistryValueKind.DWord);
 		}
+
+		if (SettingsKey.GetValue("Backup") == null)
+		{
+			SettingsKey.SetValue("Backup", 0, RegistryValueKind.DWord);
+		}
 	}
 }

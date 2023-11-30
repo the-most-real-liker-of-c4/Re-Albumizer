@@ -24,6 +24,13 @@
             <TabControl x:Name="tabControl" Margin="0,10,2,2" HorizontalAlignment="Right" Width="214">
 
                 <TabControl.Resources>
+                    
+                        <ContextMenu x:Key="ItemContextMenu">
+                            <MenuItem Header="Edit" Click="EditFromListDirect"
+                                      CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" />
+
+                        </ContextMenu>
+                    
                     <LinearGradientBrush x:Key="MouseOnBrush" StartPoint="0,0" EndPoint="0,1">
                         <GradientStop Color="Transparent" Offset="0"/>
                         <GradientStop Color="#ffebf3fd" Offset="1"/>
@@ -79,41 +86,38 @@
                 <TabItem x:Name="SongTab" Header="Song" IsEnabled="False">
                     <Grid Background="#f4f7fb">
                         <StackPanel>
-                            <Border x:Name="SCtrlTitleBorder">
+                            <Border x:Name="SCtrlTitleBorder" >
+                                <StackPanel x:Name="TITLEBOX"  Tag="InPanel"  ContextMenu="{StaticResource ItemContextMenu}">
                                 <TextBlock x:Name="SCtrlTitle" Background="{x:Null}" >
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu StaysOpen="true">
-                                            <MenuItem Header="Edit" Click="OnSCtrlTitle"/>
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
                                 </TextBlock>
+                                <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                </StackPanel>
                             </Border>
                             <Border x:Name="SCtrlTrackNoBorder" >
-                                <TextBlock x:Name="SCtrlTrackNo">
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu StaysOpen="true">
-                                            <MenuItem Header="Edit" Click="OnSCtrlTrackNo"/>
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+                                <StackPanel x:Name="TRACKBOX" Tag="InPanel" ContextMenu="{StaticResource ItemContextMenu}">
+                                    <TextBlock x:Name="SCtrlTrackNo">
+                                    </TextBlock>
+                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                </StackPanel>
                             </Border>
                             <Border x:Name="SCtrlContribArtBorder" >
-                                <TextBlock x:Name="SCtrlContribArt"  >
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu StaysOpen="true">
-                                            <MenuItem Header="Edit" Click="OnSCtrlContribArt"/>
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+                                <StackPanel x:Name="ARTISTBOX" Tag="InPanel"
+                                            ContextMenu="{StaticResource ItemContextMenu}">
+                                    <TextBlock x:Name="SCtrlContribArt">
+                                    </TextBlock>
+                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                </StackPanel>
                             </Border>
+                            
                             <Border x:Name="SCtrlComposeBorder" >
-                                <TextBlock x:Name="SCtrlComposer">
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu StaysOpen="true">
-                                            <MenuItem Header="Edit" Click="OnSCtrlComposer"/>
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+
+                                <StackPanel x:Name="COMPOSER" Tag="InPanel"
+                                            ContextMenu="{StaticResource ItemContextMenu}">
+                                    <TextBlock x:Name="SCtrlComposer">
+                                    </TextBlock>
+                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                </StackPanel>
+                                
                             </Border>
                         </StackPanel>
                     </Grid>
@@ -213,10 +217,7 @@
                         <GridViewColumn Header="Album" Width="68">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel x:Name="ALBUMBOX" ContextMenu="{StaticResource ItemContextMenu}">
-                                        <TextBox Text="{Binding Path=Album}" LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit"  Visibility="Collapsed"/>
-                                        <TextBlock Text="{Binding Path=Album}"/>
-                                    </StackPanel>
+                                     <TextBlock Text="{Binding Path=Album}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
