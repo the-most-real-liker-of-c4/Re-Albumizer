@@ -61,6 +61,9 @@
                         <Setter Property="Padding" Value="1,1,1,1"></Setter>
                         <!--<Setter Property="Background" Value=""></Setter>-->
                     </Style>
+                    <Style TargetType="Label">
+                        <Setter Property="Padding" Value="0"/>
+                    </Style>
                     <Style TargetType="Border">
                         <Setter Property="BorderThickness" Value="1"/>
                         <Setter Property="CornerRadius" Value="2"/>
@@ -87,22 +90,27 @@
                     <Grid Background="#f4f7fb">
                         <StackPanel>
                             <Border x:Name="SCtrlTitleBorder" >
-                                <StackPanel x:Name="TITLEBOX"  Tag="InPanel"  ContextMenu="{StaticResource ItemContextMenu}">
-                                <TextBlock x:Name="SCtrlTitle" Background="{x:Null}" >
+                                <StackPanel x:Name="TITLEBOX"  Tag="InPanel" Orientation="Horizontal"
+                                            ContextMenu="{StaticResource ItemContextMenu}">
+                                    <Label>Track Title: </Label>
+                                    <TextBlock x:Name="SCtrlTitle">
                                 </TextBlock>
                                 <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
                                 </StackPanel>
                             </Border>
                             <Border x:Name="SCtrlTrackNoBorder" >
-                                <StackPanel x:Name="TRACKBOX" Tag="InPanel" ContextMenu="{StaticResource ItemContextMenu}">
+                                <StackPanel x:Name="TRACKBOX" Tag="InPanel" Orientation="Horizontal"
+                                            ContextMenu="{StaticResource ItemContextMenu}">
+                                    <Label>Track Number: </Label>
                                     <TextBlock x:Name="SCtrlTrackNo">
                                     </TextBlock>
                                     <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
                                 </StackPanel>
                             </Border>
                             <Border x:Name="SCtrlContribArtBorder" >
-                                <StackPanel x:Name="ARTISTBOX" Tag="InPanel"
+                                <StackPanel x:Name="ARTISTBOX" Tag="InPanel" Orientation="Horizontal"
                                             ContextMenu="{StaticResource ItemContextMenu}">
+                                    <Label>Track Artists: </Label>
                                     <TextBlock x:Name="SCtrlContribArt">
                                     </TextBlock>
                                     <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
@@ -111,8 +119,9 @@
                             
                             <Border x:Name="SCtrlComposeBorder" >
 
-                                <StackPanel x:Name="COMPOSER" Tag="InPanel"
+                                <StackPanel x:Name="COMPOSER" Tag="InPanel" Orientation="Horizontal"
                                             ContextMenu="{StaticResource ItemContextMenu}">
+                                    <Label>Track Composer: </Label>
                                     <TextBlock x:Name="SCtrlComposer">
                                     </TextBlock>
                                     <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
@@ -127,40 +136,42 @@
                         <StackPanel>
                             <!--Style="{StaticResource OnHoverBlue}"-->
                             <Border x:Name="ACtrlAlbumBorder" >
-                                <TextBlock x:Name="ACtrlAlbumName" >
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu StaysOpen="true">
-                                            <MenuItem Header="Edit" Click="AAlbumNameChange"/>
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+                                <StackPanel x:Name="ALBUMNAME" Tag="InPanel" Orientation="Horizontal"
+                                            ContextMenu="{StaticResource ItemContextMenu}">
+                                    <Label>Album: </Label>
+                                    <TextBlock x:Name="ACtrlAlbumName">
+                                    </TextBlock>
+                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                </StackPanel>
                             </Border>
                             <Border x:Name="ACtrlGenreBorder" >
-                                <TextBlock x:Name="ACtrlGenre" >
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu StaysOpen="true">
-                                            <MenuItem Header="Edit" Click="AGenreChange"/>
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+                                <StackPanel x:Name="ALBUMGENRE" Tag="InPanel" Orientation="Horizontal"
+                                            ContextMenu="{StaticResource ItemContextMenu}">
+                                    <Label>Genres: </Label>
+                                    <TextBlock x:Name="ACtrlGenre">
+                                    </TextBlock>
+                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                </StackPanel>
+                                
                             </Border>
                             <Border x:Name="ACtrlMainArtistBorder" >
-                                <TextBlock x:Name="ACtrlMainArtist" >
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu StaysOpen="true">
-                                            <MenuItem Header="Edit" Click="AArtistChange"/>
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+                                <StackPanel x:Name="ALBUMARTIST" Tag="InPanel" Orientation="Horizontal"
+                                            ContextMenu="{StaticResource ItemContextMenu}">
+                                    <Label>Album Artist: </Label>
+                                    <TextBlock x:Name="ACtrlMainArtist">
+                                    </TextBlock>
+                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                </StackPanel>
+                                
                             </Border>
                             <Border x:Name="ACtrlYearBorder" >
-                                <TextBlock x:Name="ACtrlYear" >
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu StaysOpen="true">
-                                            <MenuItem Header="Edit" Click="AYearChange"/>
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+                                <StackPanel x:Name="ALBUMYEAR" Tag="InPanel" Orientation="Horizontal"
+                                            ContextMenu="{StaticResource ItemContextMenu}">
+                                    <Label >Year: </Label>
+                                    <TextBlock x:Name="ACtrlYear">
+                                    </TextBlock>
+                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                </StackPanel>
                             </Border>
 
                         </StackPanel>

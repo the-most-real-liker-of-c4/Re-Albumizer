@@ -723,6 +723,7 @@ public partial class AlbumizerMain : Window
 
 	private void Submit(object sender)
 	{
+		//i have no clue what to name this text box
 		if (sender is TextBox givenTextBox)
 		{
 			givenTextBox.Visibility = Visibility.Collapsed;
@@ -731,7 +732,7 @@ public partial class AlbumizerMain : Window
 					"Parent of TextBlock Is NOT StackPanel?? This Should not happen"
 				);
 			StackPanel tbParent = (StackPanel)givenTextBox.Parent;
-			//are we under multiselect?
+			// Multiselect Implementation
 
 			foreach (MusicFile song in SongListElement.SelectedItems)
 			{
@@ -754,7 +755,19 @@ public partial class AlbumizerMain : Window
 						songReal.TaglibFile.Tag.Composers = new[] { givenTextBox.Text };
 						if ((string)tbParent.Tag == "InPanel") SCtrlComposer.Text = givenTextBox.Text;
 						break;
+case "ALBUMYEAR":
+						try
+						{
+							songReal.TaglibFile.Tag.Year = UInt32.Parse(givenTextBox.Text, NumberStyles.Integer);
 
+							if ((string)tbParent.Tag == "InPanel") ACtrlYear.Text = givenTextBox.Text;
+						}
+						catch (FormatException fme)
+						{
+							MessageBox.Show("Input Was Not a Number");
+						}
+
+						break;
 					default:
 						MessageBox.Show("something went terribly wrong");
 						return;
