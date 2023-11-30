@@ -151,9 +151,9 @@ public partial class AlbumizerMain : Window
 	public AlbumizerMain()
 	{
 		Settings.Init();
-		//what???
+		
 		this.InitializeComponent();
-
+        //evil WPF hacks
 		SongListElement.ItemsSource = SongList;
 	}
 
@@ -186,7 +186,7 @@ public partial class AlbumizerMain : Window
 			{
 				Multiselect = false,
 				Title = Properties.Resources.selectnewsongPrompt,
-				Filter = "*.mp3|*MP3",
+				Filter = "*.mp3|*.MP3|*.m4a|*.M4A",
 				InitialDirectory = Environment.GetFolderPath(
 					Environment.SpecialFolder.UserProfile
 				)
@@ -223,7 +223,7 @@ public partial class AlbumizerMain : Window
 
 	private void LoadNewAlbum(object sender, RoutedEventArgs e)
 	{
-		//this shouldnt be here but at this point, i like it here
+		//this was supposed to disable the edit menu untill you load an album, but that was never implemented. why?
 		EditMenu.IsEnabled = true;
 
 		UnsavedWork = false;
@@ -246,7 +246,10 @@ public partial class AlbumizerMain : Window
 			//Load Files
 
 			//Directory.GetFiles(_path, "*.mp3")+(Directory.GetFiles(_path,".MP3"));
-			foreach (string file in Directory.GetFiles(_path, "*.mp3"))
+			string[] allowedExtentions = {".mp3",".m4a"};
+			foreach (string file in Directory.GetFiles(_path).Where(file =>
+						 allowedExtentions.Any(extention =>
+							 file.Contains(extention, StringComparison.CurrentCultureIgnoreCase))).ToArray())
 			{
 				File? currMp3 = File.Create(file);
 
@@ -264,7 +267,7 @@ public partial class AlbumizerMain : Window
 
 
 			//check for no album art before blowing up the program
-			//always use the album art of the first song (its easier that way)
+			//always use the album art of the first song (who has multiple arts for each song?)
 
 			Bitmap? albumArtBitmap = null;
 			if (SongList[0].TaglibFile.Tag.Pictures.Length == 0)
@@ -630,7 +633,7 @@ public partial class AlbumizerMain : Window
 
 #endregion Song Control Handlers
 
-#region List Element Edit Handlers (And Global Save Function
+#region List Element Edit Handlers (And Global Save Function)
 
 	private void SaveBackground(object? sender, DoWorkEventArgs e)
 	{
@@ -709,7 +712,7 @@ public partial class AlbumizerMain : Window
 		}
 		else
 		{
-			throw new InvalidOperationException("ContextMenu Parent is NOT a StackPanel");
+			throw new InvalidOperationException("ContextMenu Parent is NOT a StackPanel?? how??");
 		}
 	}
 
