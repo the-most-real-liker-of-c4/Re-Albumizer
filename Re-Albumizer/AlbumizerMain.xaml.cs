@@ -763,7 +763,7 @@ public partial class AlbumizerMain : Window
 
 							if ((string)tbParent.Tag == "InPanel") ACtrlYear.Text = givenTextBox.Text;
 						}
-						catch (FormatException fme)
+						catch (FormatException)
 						{
 							MessageBox.Show("Input Was Not a Number");
 						}
@@ -790,11 +790,12 @@ public partial class AlbumizerMain : Window
 
 				ICollectionView? view = CollectionViewSource.GetDefaultView(SongList);
 				view.Refresh();
-
-
+		//CS8602 Can Suck on my balls
+		#pragma warning disable CS8602 // Dereference of a possibly null reference.
 				tbParent.Children
 					.OfType<TextBlock>()
 					.FirstOrDefault()
+			#pragma warning restore CS8602 
 					.Visibility = Visibility.Visible;
 			}
 		}

@@ -247,6 +247,14 @@
         </Grid>
         <DockPanel Height="23" VerticalAlignment="Top">
             <Menu DockPanel.Dock="Top" Height="23">
+                <Menu.Background>
+                    <LinearGradientBrush EndPoint="0,1">
+                        <GradientStop Color="#FFF6F6F6" Offset="0.25"/>
+                        <GradientStop Color="#FFEAE8E8" Offset="0.25"/>
+                        <GradientStop Color="#FFDCD9D9" Offset="0.8"/>
+                        <GradientStop Color="#FFD8EBFF" Offset="1"/>
+                    </LinearGradientBrush>
+                </Menu.Background>
                 <MenuItem x:Name="FileMenu" Header="_File">
                     <MenuItem Header="_Open" Click="LoadNewAlbum"/>
                     <MenuItem Header="_New" Click="NewAlbumFolder"/>
