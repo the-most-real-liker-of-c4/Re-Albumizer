@@ -9,7 +9,7 @@
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
         <Grid.Background>
             <RadialGradientBrush Center="1,1" GradientOrigin="1,1" SpreadMethod="Reflect">
-                <GradientStop Color="{DynamicResource {x:Static SystemColors.GradientActiveCaptionColorKey}}"/>
+                <GradientStop Color="#FFC0DFFF" Offset="0"/>
                 <GradientStop Color="White" Offset="1"/>
             </RadialGradientBrush>
         </Grid.Background>
