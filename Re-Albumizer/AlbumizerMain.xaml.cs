@@ -151,9 +151,9 @@ public partial class AlbumizerMain : Window
 	public AlbumizerMain()
 	{
 		Settings.Init();
-		
+
 		this.InitializeComponent();
-        //evil WPF hacks
+		//evil WPF hacks
 		SongListElement.ItemsSource = SongList;
 	}
 
@@ -246,7 +246,7 @@ public partial class AlbumizerMain : Window
 			//Load Files
 
 			//Directory.GetFiles(_path, "*.mp3")+(Directory.GetFiles(_path,".MP3"));
-			string[] allowedExtentions = {".mp3",".m4a"};
+			string[] allowedExtentions = { ".mp3", ".m4a" };
 			foreach (string file in Directory.GetFiles(_path).Where(file =>
 						 allowedExtentions.Any(extention =>
 							 file.Contains(extention, StringComparison.CurrentCultureIgnoreCase))).ToArray())
@@ -282,11 +282,11 @@ public partial class AlbumizerMain : Window
 			SongListElement.SelectedIndex = 0;
 
 			//you thought we were done here but No!
-			ACtrlAlbumName.Text = $"Album: {SongList[0].TaglibFile.Tag.Album}";
-			ACtrlGenre.Text = $"Genres: {String.Join(",", SongList[0].TaglibFile.Tag.Genres)}";
+			ACtrlAlbumName.Text = $"{SongList[0].TaglibFile.Tag.Album}";
+			ACtrlGenre.Text = $"{String.Join(",", SongList[0].TaglibFile.Tag.Genres)}";
 			ACtrlMainArtist.Text =
-				$"Album Artists: {String.Join(",", SongList[0].TaglibFile.Tag.AlbumArtists)}";
-			ACtrlYear.Text = $"Year: {SongList[0].TaglibFile.Tag.Year.ToString()}";
+				$"{String.Join(",", SongList[0].TaglibFile.Tag.AlbumArtists)}";
+			ACtrlYear.Text = $"{SongList[0].TaglibFile.Tag.Year.ToString()}";
 			AlbumTab.IsEnabled = true;
 			SongTab.IsEnabled = true;
 		}
@@ -374,7 +374,7 @@ public partial class AlbumizerMain : Window
 			song.TaglibFile.Tag.Pictures = new IPicture[] { new Picture(selNewFile.FileName) };
 		}
 	}
-
+/*
 	private void AAlbumNameChange(object sender, RoutedEventArgs e)
 	{
 		EditObject edobj = new EditObject(EditObject.InputMode.TEXT)
@@ -447,7 +447,7 @@ public partial class AlbumizerMain : Window
 				song.TaglibFile.Tag.Genres = res;
 				ACtrlGenre.Text = $"Genres: {String.Join(",", res)}";
 			}
-	}
+	}*/
 
 #endregion Album Control Setters
 
@@ -520,6 +520,7 @@ public partial class AlbumizerMain : Window
 #region Song Control Handlers
 
 	//TODO:change to save
+	/*
 	private void OnSCtrlTitle(object sender, RoutedEventArgs e)
 	{
 		EditObject edobj = new EditObject(EditObject.InputMode.TEXT)
@@ -607,7 +608,7 @@ public partial class AlbumizerMain : Window
 			ICollectionView? view = CollectionViewSource.GetDefaultView(SongList);
 			view.Refresh();
 		}
-	}
+	}*/
 
 	private void OnSongSelectChanged(object sender, SelectionChangedEventArgs e)
 	{
@@ -752,10 +753,10 @@ public partial class AlbumizerMain : Window
 						if ((string)tbParent.Tag == "InPanel") SCtrlTrackNo.Text = givenTextBox.Text;
 						break;
 					case "COMPOSER":
-						songReal.TaglibFile.Tag.Composers = new[] { givenTextBox.Text };
+						songReal.TaglibFile.Tag.Composers = givenTextBox.Text.Split(";");
 						if ((string)tbParent.Tag == "InPanel") SCtrlComposer.Text = givenTextBox.Text;
 						break;
-case "ALBUMYEAR":
+					case "ALBUMYEAR":
 						try
 						{
 							songReal.TaglibFile.Tag.Year = UInt32.Parse(givenTextBox.Text, NumberStyles.Integer);
@@ -767,6 +768,20 @@ case "ALBUMYEAR":
 							MessageBox.Show("Input Was Not a Number");
 						}
 
+						break;
+					case "ALBUMARTIST":
+						songReal.TaglibFile.Tag.AlbumArtists = givenTextBox.Text.Split(";");
+
+						if ((string)tbParent.Tag == "InPanel") ACtrlMainArtist.Text = givenTextBox.Text;
+						break;
+					case "ALBUMNAME":
+						songReal.TaglibFile.Tag.Album = givenTextBox.Text;
+
+						if ((string)tbParent.Tag == "InPanel") ACtrlAlbumName.Text = givenTextBox.Text;
+						break;
+					case "ALBUMGENRE":
+						songReal.TaglibFile.Tag.Genres = givenTextBox.Text.Split(";");
+						if ((string)tbParent.Tag == "InPanel") ACtrlGenre.Text = givenTextBox.Text;
 						break;
 					default:
 						MessageBox.Show("something went terribly wrong");
