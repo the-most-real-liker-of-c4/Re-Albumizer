@@ -1,3 +1,0 @@
-﻿AlBUMIZER------------------V 1-Late Beta
-the open source album editor and maker
-created by Allon Lubitch -- github.com/the-most-real-liker-of-c4/Re-Albumizer

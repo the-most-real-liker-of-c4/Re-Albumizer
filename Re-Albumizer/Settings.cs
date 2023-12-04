@@ -10,7 +10,7 @@ namespace Re_Albumizer;
 
 internal static class Settings
 {
-	internal static RegistryKey SettingsKey;
+	internal static RegistryKey SettingsKey = null!;
 
 	public static void Init()
 	{

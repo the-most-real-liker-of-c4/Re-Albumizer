@@ -142,9 +142,6 @@
   <data name="YearChangeYearMalformatCaption" xml:space="preserve">
     <value>Error</value>
   </data>
-  <data name="AboutText" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resx\About.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
   <data name="InvalidTrackNo" xml:space="preserve">
     <value>Invalid Number</value>
   </data>
@@ -156,5 +153,8 @@
   </data>
   <data name="WriteFileFailedCaption" xml:space="preserve">
     <value>Cannot Write to File</value>
+  </data>
+  <data name="Numerr" xml:space="preserve">
+    <value>Input Was Not a Number</value>
   </data>
 </root>

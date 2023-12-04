@@ -61,17 +61,6 @@ namespace Re_Albumizer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AlBUMIZER------------------V 1-Late Beta
-        ///the open source album editor and maker
-        ///created by Allon Lubitch -- github.com/the-most-real-liker-of-c4/Re-Albumizer.
-        /// </summary>
-        internal static string AboutText {
-            get {
-                return ResourceManager.GetString("AboutText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Delete Confirmation.
         /// </summary>
         internal static string DeleteConfirmCaption {
@@ -123,6 +112,15 @@ namespace Re_Albumizer.Properties {
             get {
                 object obj = ResourceManager.GetObject("Nullart", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input Was Not a Number.
+        /// </summary>
+        internal static string Numerr {
+            get {
+                return ResourceManager.GetString("Numerr", resourceCulture);
             }
         }
         
