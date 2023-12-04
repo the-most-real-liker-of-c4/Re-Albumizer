@@ -1,17 +1,14 @@
 # Re-Albumizer
-A simplicity simple album editor
-
+A simplicity simple album editor, made in the style of Windows Media Player 11
 
 ![image](Albumizer.png)<br>
-*deary me! it looks like this idiot is using windows 7!*
 
-## Re Albumizer Is The Replacement For Albumizer,
+## Creating And Modifying Local Albums
 It Makes Making Albums From Loose MP3 Files easy and not a pain. <br>
 From This <br>
 ![Incomplete Album](JayForemanUnComplete.png) <br>
 to this <br>
-
-![JayForemanComplete.png](JayForemanComplete.png)
+![Complete Album](JayForemanComplete.png)
 
 ---
 If you do use this, Then thank you
