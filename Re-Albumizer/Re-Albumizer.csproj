@@ -22,7 +22,12 @@
 
   <ItemGroup>
     <None Remove="FISH.jpg" />
+    <None Remove="resx\FISH.png" />
     <None Remove="wmsc.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="resx\FISH.png" />
   </ItemGroup>
 
   <ItemGroup>

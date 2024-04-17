@@ -588,7 +588,7 @@ public partial class AlbumizerMain : Window
         );
     }
 
-    public void ExitApp(object sender, RoutedEventArgs e)
+    public void ExitProg(object sender, RoutedEventArgs e)
     {
         this.Close();
     }
