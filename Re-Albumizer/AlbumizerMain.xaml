@@ -19,72 +19,74 @@
         </Grid.Background>
         <Label x:Name="LoadedAlbum_Text" Content="Current Album: None" Margin="10,34,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="517"/>
         <Grid x:Name="MainAlbumControls" Margin="5,57,5,5" >
-            
-            <Image x:Name="AlbumArt" Margin="3,10,0,0" Source="/FISH.png" HorizontalAlignment="Left" Width="180" Height="180" VerticalAlignment="Top">
-                <Image.ContextMenu>
-                    <ContextMenu StaysOpen="true">
-                        <MenuItem Header="Edit" Click="OnChangeAlbumArt"/>
-                    </ContextMenu>
-                </Image.ContextMenu>
-            </Image>
+
+            <Border x:Name="AlbumArtBorder" BorderBrush="Black" BorderThickness="1" Width="180" Height="180" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="3,3,3,3">
+                <Image x:Name="AlbumArt" Source="resx/FISH.png" HorizontalAlignment="Left" Width="180" Height="180" VerticalAlignment="Top">
+                    <Image.ContextMenu>
+                        <ContextMenu StaysOpen="true">
+                            <MenuItem Header="Edit" Click="OnChangeAlbumArt"/>
+                        </ContextMenu>
+                    </Image.ContextMenu>
+                </Image>
+            </Border>
             <TabControl x:Name="tabControl" Margin="0,10,2,2" HorizontalAlignment="Right" Width="214" Background="#00F9F9F9">
 
                 <TabControl.Resources>
-                    
-                        <ContextMenu x:Key="ItemContextMenu">
-                            <MenuItem Header="Edit" Click="EditFromListDirect"
-                                      CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" />
 
-                        </ContextMenu>
-                    
+                    <ContextMenu x:Key="ItemContextMenu">
+                        <MenuItem Header="Edit" Click="EditFromListDirect"
+                                      CommandParameter="{Binding Parent, RelativeSource={RelativeSource Mode=Self}}" />
+
+                    </ContextMenu>
+
                     <LinearGradientBrush x:Key="MouseOnBrush" StartPoint="0,0" EndPoint="0,1">
                         <GradientStop Color="Transparent" Offset="0"/>
                         <GradientStop Color="#ffebf3fd" Offset="1"/>
                     </LinearGradientBrush>
                     <Duration x:Key="MouseEnterDuration">0:0:0.1</Duration>
                     <Duration x:Key="MouseLeaveDuration">0:0:0.05</Duration>
-                    <Style TargetType="TextBlock">
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Padding" Value="1,1,1,1"/>
                         <Style.Triggers>
-                            <EventTrigger RoutedEvent="MouseEnter">
+                            <EventTrigger RoutedEvent="UIElement.MouseEnter">
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <local:BrushAnimation
                                             Storyboard.TargetProperty="Background" 
-                                            Duration="{StaticResource MouseEnterDuration}" From="Transparent"  To="{StaticResource MouseOnBrush}"></local:BrushAnimation>
+                                            Duration="{StaticResource MouseEnterDuration}" From="Transparent"  To="{StaticResource MouseOnBrush}"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
-                            <EventTrigger RoutedEvent="MouseLeave">
+                            <EventTrigger RoutedEvent="UIElement.MouseLeave">
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <local:BrushAnimation
                                             Storyboard.TargetProperty="Background" 
-                                            Duration="{StaticResource MouseLeaveDuration}"  To="Transparent"></local:BrushAnimation>
+                                            Duration="{StaticResource MouseLeaveDuration}"  To="Transparent"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
                         </Style.Triggers>
-                        <Setter Property="Padding" Value="1,1,1,1"></Setter>
                         <!--<Setter Property="Background" Value=""></Setter>-->
                     </Style>
-                    <Style TargetType="Label">
+                    <Style TargetType="{x:Type Label}">
                         <Setter Property="Padding" Value="0"/>
                     </Style>
-                    <Style TargetType="Border">
+                    <Style TargetType="{x:Type Border}">
                         <Setter Property="BorderThickness" Value="1"/>
                         <Setter Property="CornerRadius" Value="2"/>
                         <Style.Triggers>
-                            <EventTrigger RoutedEvent="MouseEnter">
+                            <EventTrigger RoutedEvent="UIElement.MouseEnter">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <local:BrushAnimation Storyboard.TargetProperty="BorderBrush"  To="#ffc4ddfa" Duration="{StaticResource MouseEnterDuration}"></local:BrushAnimation>
+                                        <local:BrushAnimation Storyboard.TargetProperty="BorderBrush"  To="#ffc4ddfa" Duration="{StaticResource MouseEnterDuration}"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
-                            <EventTrigger RoutedEvent="MouseLeave">
+                            <EventTrigger RoutedEvent="UIElement.MouseLeave">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <local:BrushAnimation Storyboard.TargetProperty="BorderBrush"  To="Transparent" Duration="{StaticResource MouseLeaveDuration}"></local:BrushAnimation>
+                                        <local:BrushAnimation Storyboard.TargetProperty="BorderBrush"  To="Transparent" Duration="{StaticResource MouseLeaveDuration}"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
@@ -98,41 +100,37 @@
                             <Border x:Name="SCtrlTitleBorder" >
                                 <StackPanel x:Name="TITLEBOX"  Tag="InPanel" Orientation="Horizontal"
                                             ContextMenu="{StaticResource ItemContextMenu}">
-                                    <Label>Track Title: </Label>
-                                    <TextBlock x:Name="SCtrlTitle">
-                                </TextBlock>
-                                <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                    <Label Content="Track Title:"/>
+                                    <TextBlock x:Name="SCtrlTitle"/>
+                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"/>
                                 </StackPanel>
                             </Border>
                             <Border x:Name="SCtrlTrackNoBorder" >
                                 <StackPanel x:Name="TRACKBOX" Tag="InPanel" Orientation="Horizontal"
                                             ContextMenu="{StaticResource ItemContextMenu}">
-                                    <Label>Track Number: </Label>
-                                    <TextBlock x:Name="SCtrlTrackNo">
-                                    </TextBlock>
-                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                    <Label Content="Track Number:"/>
+                                    <TextBlock x:Name="SCtrlTrackNo"/>
+                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"/>
                                 </StackPanel>
                             </Border>
                             <Border x:Name="SCtrlContribArtBorder" >
                                 <StackPanel x:Name="ARTISTBOX" Tag="InPanel" Orientation="Horizontal"
                                             ContextMenu="{StaticResource ItemContextMenu}">
-                                    <Label>Track Artists: </Label>
-                                    <TextBlock x:Name="SCtrlContribArt">
-                                    </TextBlock>
-                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                    <Label Content="Track Artists:"/>
+                                    <TextBlock x:Name="SCtrlContribArt"/>
+                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"/>
                                 </StackPanel>
                             </Border>
-                            
+
                             <Border x:Name="SCtrlComposeBorder" >
 
                                 <StackPanel x:Name="COMPOSER" Tag="InPanel" Orientation="Horizontal"
                                             ContextMenu="{StaticResource ItemContextMenu}">
-                                    <Label>Track Composer: </Label>
-                                    <TextBlock x:Name="SCtrlComposer">
-                                    </TextBlock>
-                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                    <Label Content="Track Composer:"/>
+                                    <TextBlock x:Name="SCtrlComposer"/>
+                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"/>
                                 </StackPanel>
-                                
+
                             </Border>
                         </StackPanel>
                     </Grid>
@@ -144,39 +142,35 @@
                             <Border x:Name="ACtrlAlbumBorder" >
                                 <StackPanel x:Name="ALBUMNAME" Tag="InPanel" Orientation="Horizontal"
                                             ContextMenu="{StaticResource ItemContextMenu}">
-                                    <Label>Album: </Label>
-                                    <TextBlock x:Name="ACtrlAlbumName">
-                                    </TextBlock>
-                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                    <Label Content="Album:"/>
+                                    <TextBlock x:Name="ACtrlAlbumName"/>
+                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"/>
                                 </StackPanel>
                             </Border>
                             <Border x:Name="ACtrlGenreBorder" >
                                 <StackPanel x:Name="ALBUMGENRE" Tag="InPanel" Orientation="Horizontal"
                                             ContextMenu="{StaticResource ItemContextMenu}">
-                                    <Label>Genres: </Label>
-                                    <TextBlock x:Name="ACtrlGenre">
-                                    </TextBlock>
-                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                    <Label Content="Genres:"/>
+                                    <TextBlock x:Name="ACtrlGenre"/>
+                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"/>
                                 </StackPanel>
-                                
+
                             </Border>
                             <Border x:Name="ACtrlMainArtistBorder" >
                                 <StackPanel x:Name="ALBUMARTIST" Tag="InPanel" Orientation="Horizontal"
                                             ContextMenu="{StaticResource ItemContextMenu}">
-                                    <Label>Album Artist: </Label>
-                                    <TextBlock x:Name="ACtrlMainArtist">
-                                    </TextBlock>
-                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                    <Label Content="Album Artist:"/>
+                                    <TextBlock x:Name="ACtrlMainArtist"/>
+                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"/>
                                 </StackPanel>
-                                
+
                             </Border>
                             <Border x:Name="ACtrlYearBorder" >
                                 <StackPanel x:Name="ALBUMYEAR" Tag="InPanel" Orientation="Horizontal"
                                             ContextMenu="{StaticResource ItemContextMenu}">
-                                    <Label >Year: </Label>
-                                    <TextBlock x:Name="ACtrlYear">
-                                    </TextBlock>
-                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
+                                    <Label Content="Year:" />
+                                    <TextBlock x:Name="ACtrlYear"/>
+                                    <TextBox LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"/>
                                 </StackPanel>
                             </Border>
 
@@ -187,8 +181,8 @@
             <ListView x:Name="SongListElement" SelectionChanged="OnSongSelectChanged" d:ItemsSource="{Binding SongList}" Margin="202,10,221,10" ScrollViewer.HorizontalScrollBarVisibility="Visible" HorizontalContentAlignment="Stretch" Background="Transparent">
                 <ListView.Resources>
                     <ContextMenu x:Key="ItemContextMenu" >
-                        <MenuItem Header="Edit" Click="EditFromListDirect"  CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" />
-                       
+                        <MenuItem Header="Edit" Click="EditFromListDirect"  CommandParameter="{Binding Parent, RelativeSource={RelativeSource Mode=Self}}" />
+
                     </ContextMenu>
                 </ListView.Resources>
                 <!--
@@ -205,8 +199,8 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel x:Name="TITLEBOX" ContextMenu="{StaticResource ItemContextMenu}">
-                                        <TextBox Text="{Binding Path=Title}" LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
-                                        <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                                        <TextBox Text="{Binding Title}" LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"/>
+                                        <TextBlock Text="{Binding Title}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
@@ -215,8 +209,8 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel x:Name="ARTISTBOX" ContextMenu="{StaticResource ItemContextMenu}">
-                                        <TextBox Text="{Binding Path=Performers}"  LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
-                                        <TextBlock Text="{Binding Path=Performers}"></TextBlock>
+                                        <TextBox Text="{Binding Performers}"  LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"/>
+                                        <TextBlock Text="{Binding Performers}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
@@ -225,8 +219,8 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel x:Name="TRACKBOX" ContextMenu="{StaticResource ItemContextMenu}">
-                                        <TextBox Text="{Binding Path=TrackId}" LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"></TextBox>
-                                        <TextBlock Text="{Binding Path=TrackId}"></TextBlock>
+                                        <TextBox Text="{Binding TrackId}" LostFocus="CheckFocusSubmit" KeyDown="CheckSubmit" Visibility="Collapsed"/>
+                                        <TextBlock Text="{Binding TrackId}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
@@ -234,7 +228,7 @@
                         <GridViewColumn Header="Album" Width="68">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                     <TextBlock Text="{Binding Path=Album}"/>
+                                    <TextBlock Text="{Binding Album}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -245,8 +239,8 @@
             </ListView>
 
         </Grid>
-        <DockPanel Height="23" VerticalAlignment="Top">
-            <Menu DockPanel.Dock="Top" Height="19">
+        <DockPanel VerticalAlignment="Top" Height="21">
+            <Menu DockPanel.Dock="Top">
                   <Menu.ItemsPanel>
                     <ItemsPanelTemplate>
                         <DockPanel HorizontalAlignment="Stretch"/>

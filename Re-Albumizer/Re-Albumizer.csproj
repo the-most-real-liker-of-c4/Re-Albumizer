@@ -7,27 +7,44 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>resx\wmsc.ico</ApplicationIcon>
-    <Version>1.5</Version>
-    <AssemblyVersion>1.5</AssemblyVersion>
-    <FileVersion>1.5</FileVersion>
+    <Version>2.0</Version>
+    <AssemblyVersion>2.0</AssemblyVersion>
+    <FileVersion>2.0</FileVersion>
+    <Platforms>AnyCPU;x64</Platforms>
+    <SignAssembly>False</SignAssembly>
+    <Authors>Allon Lubitch</Authors>
+    <Company>Allon Lubitch (again)</Company>
+    <Copyright>Copyright (c) 2024 Allon L</Copyright>
+    <Description>Re-Albumizer: The Album Creating Program and 100% Mp3Tag Rip-off
+|------------------------------|
+Thanks to the Mono Project and the Ookii Dialogs Contributors,
+and thanks to you, for using this program.</Description>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>embedded</DebugType>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>embedded</DebugType>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="FISH.jpg" />
     <None Remove="resx\FISH.png" />
     <None Remove="wmsc.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="resx\FISH.png" />
+    <Resource Include="resx\FISH.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,7 +55,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="FISH.jpg" />
     <Resource Include="wmsc.ico" />
   </ItemGroup>
 

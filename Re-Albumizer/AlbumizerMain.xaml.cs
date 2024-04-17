@@ -597,7 +597,7 @@ public partial class AlbumizerMain : Window
     {
         //show about page
 
-        throw new NotImplementedException("Screw You");
+        new About().ShowDialog();
     }
 
     private void OpenAlbumFolder(object sender, RoutedEventArgs e)
